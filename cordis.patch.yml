@@ -1,0 +1,3 @@
+- insert:
+    - id: deepsearch-public
+      name: 'dsh-deepsearch'

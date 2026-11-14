@@ -1,0 +1,35 @@
+# README screenshots: isolated component demo
+
+Run from the repository root:
+
+```sh
+node --test scripts/demo/fixtures.test.mjs
+node scripts/capture-demo.mjs
+```
+
+Requires Node 22+, npm, and `agent-browser` with a Chromium installation (`agent-browser install`).
+The capture script installs pinned React 18.3.1 + ReactDOM 18.3.1 in a fresh OS temporary directory, starts an ephemeral loopback-only server, uses a named fresh headless browser session, writes six screenshots plus machine-readable evidence to `docs/images/`, and closes the browser/server and removes temporary dependencies in `finally`. It does not attach to the real DSH page, existing browser, CDP, accounts or conversation data.
+
+## What is real
+
+The server serves the repository's current `client.js` byte-for-byte. Its `window.__ModuleLoader__.load` factory runs with real React. The actual `Overlay` component is registered in `shell.overlay`. The actual component supplies all search UI, highlighting, timestamps, keyboard shortcut, project selection, workspace selector, archive checkbox, appearance controls, state updates, and CSS. The capture script performs browser interactions; it does not draw a replacement search panel or rewrite the component source.
+
+## What is mocked
+
+- The module loader and minimal injected host context (`slots`, `uiSession`, `uiWorkspace`, `sessions`, `layout`).
+- Allowlisted catalog/search HTTP endpoints, responding only from `fixtures.mjs`.
+- All Chinese conversation titles, messages, dates, workspaces and IDs: invented documentation data.
+- The backdrop and CSS theme tokens normally supplied by the host. The dark screenshot demonstrates the component's actual “跟随 DSH” control against mocked dark tokens, not a running native host/theme integration.
+
+The isolated host intentionally rejects native session navigation. Only project result selection is exercised, because it scopes the search panel without opening a conversation. No screenshot claims native message navigation or positioning/highlight success. Every screenshot contains a visible “演示数据 / isolated demo” disclosure.
+
+## Screenshots
+
+1. `01-search.png`: Chinese match, actual excerpt highlighting and formatted message timestamps.
+2. `02-projects.png`: use the actual 项目 tab/result action to constrain to 星河, then search within that workspace.
+3. `03-archived.png`: check 含归档; the archived fictional result appears.
+4. `04-glass.png`: actual 毛玻璃 controls, mocked backdrop/material token.
+5. `05-theme.png`: actual 跟随 DSH controls with mocked dark host tokens.
+6. `06-custom.png`: actual custom color, opacity and blur controls.
+
+`demo-evidence.json` records the exact client SHA-256/version, rendered control values, result counts, highlighted strings, mock requests, and the navigation-not-attempted check. Browser errors fail the capture. Rerun screenshots after changing client/version so the real footer stays current.

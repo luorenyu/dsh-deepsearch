@@ -1,0 +1,187 @@
+{
+  "source": "client.js (served byte-for-byte, never rewritten)",
+  "sourceSha256": "6dee787ef7082a9b848259c717a4e28bacc7118d798fe1c7e389b7573b161abb",
+  "version": "0.1.12",
+  "renderer": "React 18.3.1 / ReactDOM 18.3.1",
+  "browser": "agent-browser isolated fresh session",
+  "viewport": {
+    "width": 1180,
+    "height": 960
+  },
+  "privacy": "No real host, accounts, private sessions, CDP, user browser profile, or user data directories accessed. Native navigation blocked.",
+  "real": [
+    "Overlay React component",
+    "Mark excerpt highlighting",
+    "keyboard shortcut",
+    "project selection",
+    "workspace filter",
+    "archive checkbox",
+    "appearance controls",
+    "client CSS"
+  ],
+  "mocked": [
+    "module loader and injected host context",
+    "catalog/search API responses",
+    "invented Chinese content and timestamps",
+    "background and host theme CSS tokens"
+  ],
+  "screenshots": [
+    {
+      "file": "01-search.png",
+      "title": "中文片段搜索 · 命中摘要高亮 · 消息时间",
+      "appearance": "glass",
+      "savedAppearance": null,
+      "workspace": "",
+      "archived": false,
+      "resultCount": 4,
+      "marks": [
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false
+    },
+    {
+      "file": "02-projects.png",
+      "title": "项目入口限定工作区 · 只看「星河 · 客户端体验」",
+      "appearance": "glass",
+      "savedAppearance": null,
+      "workspace": "demo-orbit",
+      "archived": false,
+      "resultCount": 2,
+      "marks": [
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 2 条 · 已扫描 2/2↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false
+    },
+    {
+      "file": "03-archived.png",
+      "title": "勾选「含归档」· 找回旧方案的历史记录",
+      "appearance": "glass",
+      "savedAppearance": null,
+      "workspace": "",
+      "archived": true,
+      "resultCount": 5,
+      "marks": [
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 5 条 · 已扫描 5/5↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false
+    },
+    {
+      "file": "04-glass.png",
+      "title": "外观 · 毛玻璃面板（背景与主题令牌由 mock 提供）",
+      "appearance": "glass",
+      "savedAppearance": {
+        "mode": "glass",
+        "color": "#edf2f7",
+        "opacity": 88,
+        "blur": 18
+      },
+      "workspace": "",
+      "archived": false,
+      "resultCount": 4,
+      "marks": [
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false
+    },
+    {
+      "file": "05-theme.png",
+      "title": "外观 · 跟随 DSH（深色主题令牌由 mock 提供）",
+      "appearance": "theme",
+      "savedAppearance": {
+        "mode": "theme",
+        "color": "#edf2f7",
+        "opacity": 88,
+        "blur": 18
+      },
+      "workspace": "",
+      "archived": false,
+      "resultCount": 4,
+      "marks": [
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false
+    },
+    {
+      "file": "06-custom.png",
+      "title": "外观 · 自定义底色、不透明度与模糊",
+      "appearance": "custom",
+      "savedAppearance": {
+        "mode": "custom",
+        "color": "#203b48",
+        "opacity": 85,
+        "blur": 18
+      },
+      "workspace": "",
+      "archived": false,
+      "resultCount": 4,
+      "marks": [
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/deepsearch/catalog"
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "workspaceId": "demo-orbit",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "includeArchived": true
+      }
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "includeArchived": false
+      }
+    }
+  ]
+}

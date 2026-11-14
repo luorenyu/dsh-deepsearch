@@ -1,0 +1,69 @@
+{
+  "name": "dsh-deepsearch",
+  "version": "0.1.12",
+  "description": "Local-first conversation full-text search for DeepSeek Harness, with Chinese substring matching and native message navigation.",
+  "type": "module",
+  "license": "MIT",
+  "author": "RonnyLuo",
+  "homepage": "https://github.com/luorenyu/dsh-deepsearch",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luorenyu/dsh-deepsearch.git"
+  },
+  "bugs": {
+    "url": "https://github.com/luorenyu/dsh-deepsearch/issues"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "deepsearch",
+    "search",
+    "full-text",
+    "session",
+    "conversation",
+    "中文",
+    "全文搜索",
+    "会话搜索"
+  ],
+  "engines": {
+    "node": ">=22",
+    "dsh": "0.2.2-rc.3"
+  },
+  "exports": {
+    ".": "./runtime-0.1.12.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./locale/en.json": "./locale/en.json",
+    "./locale/zh-CN.json": "./locale/zh-CN.json",
+    "./icon": "./icon.svg"
+  },
+  "icon": "./icon.svg",
+  "files": [
+    "runtime-0.1.12.js",
+    "host.js",
+    "search-core.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-session"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "check": "node --check client.js && node --check host.js && node --check search-core.js && node --check runtime-0.1.12.js"
+  }
+}
