@@ -53,7 +53,7 @@ dsh plugin --profile desktop add /path/to/dsh-deepsearch-0.1.12.tgz
 
 ### 在 DSH 插件市场中发现
 
-本项目准备提交到 [Awesome DSH Plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin)，这是 `dshmarket` 使用的第三方社区目录；是否收录以维护者审核与 PR 合并为准。**GitHub 发布不等于已经在市场上架。**
+已提交 [市场收录申请 #15379](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin/pull/15379)，目前为草稿，等待仓库创建满 24 小时后转为正式待审及维护者审核。[Awesome DSH Plugin](https://github.com/awesome-dsh-plugin/awesome-dsh-plugin) 是 `dshmarket` 使用的第三方社区目录；是否收录以 PR 合并和市场同步为准。**GitHub 发布不等于已经在市场上架。**
 
 审核通过后，可在相应市场搜索 **DeepSearch** 或 **会话全文搜索**。请确认来源是 `luorenyu/dsh-deepsearch`，不是其他作者的同名插件。DSH 本体也支持自定义索引，各客户端配置的来源可能不同。
 
