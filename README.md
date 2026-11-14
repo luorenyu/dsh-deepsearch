@@ -37,7 +37,9 @@
 
 当前验证宿主为 **DSH Desktop 0.2.2-rc.3**；其他版本与平台尚未完成真实桌面回归。包的兼容性范围暂时限定该版本。
 
-### 从 npm 安装（推荐）
+### 从 npm 安装（待发布）
+
+> 包名已确定为 `@renyuluo/dsh-deepsearch`，但当前发布被 npm 账号 2FA 要求拦截，尚未在 registry 上架。以下命令仅在发布完成后可用；现在请使用下方 GitHub / Release 安装方式。
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
