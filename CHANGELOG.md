@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.13
+
+- Publish the public npm package as `@renyuluo/dsh-deepsearch`; the unscoped package belongs to another author.
+- Align the Cordis bundle package reference and browser module ID with the scoped identity.
+- Preserve product title, repository, local appearance settings and search behavior.
+- Document explicit replacement of this project’s prior unscoped GitHub install to avoid duplicate plugin instances.
+
 ## 0.1.12
 
 First portable public GitHub release.

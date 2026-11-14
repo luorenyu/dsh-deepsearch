@@ -37,19 +37,38 @@
 
 当前验证宿主为 **DSH Desktop 0.2.2-rc.3**；其他版本与平台尚未完成真实桌面回归。包的兼容性范围暂时限定该版本。
 
+### 从 npm 安装（推荐）
+
+```sh
+dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
+```
+
+公开包名为 **`@renyuluo/dsh-deepsearch`**；产品名和 GitHub 仓库名不变。
+
 ### 从 GitHub 安装
 
 ```sh
-dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.12'
+dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.13'
 ```
 
 也可以从 [Releases](https://github.com/luorenyu/dsh-deepsearch/releases) 下载安装包后安装：
 
 ```sh
-dsh plugin --profile desktop add /path/to/dsh-deepsearch-0.1.12.tgz
+dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.13.tgz
 ```
 
-> **重要：不要运行 `add dsh-deepsearch` 来安装 npm 同名包。** npm 上的同名包属于其他作者，与本仓库无关。本项目通过上方 GitHub 地址或本仓库 Release 安装包分发，不发布到那个 npm 包名。
+> **重要：不要运行 `add dsh-deepsearch` 来安装 npm 同名包。** 无作用域的 npm 同名包属于其他作者，与本仓库无关。请使用 `@renyuluo/dsh-deepsearch`，或本仓库 GitHub / Release 地址。
+
+从本项目旧版无作用域 GitHub 安装迁移时，请先卸载旧条目，再安装作用域包，避免两份搜索插件同时加载：
+
+```sh
+dsh plugin --profile desktop remove dsh-deepsearch
+dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
+```
+
+这是替换本项目旧安装条目，不是建议卸载其他作者的同名插件。外观存储键保持不变；同一宿主页面来源下已有偏好会继续使用。
+
+上方功能截图来自 0.1.12 演示组件；0.1.13 仅调整分发身份，不改变搜索功能。
 
 ### 在 DSH 插件市场中发现
 
@@ -115,7 +134,7 @@ npm pack --ignore-scripts
 卸载：
 
 ```sh
-dsh plugin --profile desktop remove dsh-deepsearch
+dsh plugin --profile desktop remove @renyuluo/dsh-deepsearch
 ```
 
 [MIT License](LICENSE) · [问题反馈](https://github.com/luorenyu/dsh-deepsearch/issues)

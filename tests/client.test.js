@@ -149,11 +149,11 @@ test('retry handler resumes saved cursor instead of clearing successful hits', (
 test('package overlay and exports agree', () => {
   const manifest=JSON.parse(readFileSync(new URL('../package.json',import.meta.url)));
   const overlay=readFileSync(new URL('../cordis.patch.yml',import.meta.url),'utf8');
-  assert.equal(manifest.name,'dsh-deepsearch');
+  assert.equal(manifest.name,'@renyuluo/dsh-deepsearch');
   const entry = overlay.match(/name: '([^']+)'/)[1];
   assert.equal(entry, manifest.name); // Portable root package discovery, not a machine-specific file URL.
   assert.equal(manifest.exports['./package.json'], './package.json');
   assert.ok(!['file:', '/Users/'].some(part => overlay.includes(part)));
   assert.equal(manifest.exports['.'],'./runtime-'+manifest.version+'.js');
-  assert.match(source,/id: 'dsh-deepsearch'/);
+  assert.ok(source.includes("id: '@renyuluo/dsh-deepsearch'"));
 });

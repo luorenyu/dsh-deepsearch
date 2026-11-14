@@ -13,7 +13,7 @@ test('portable release exports manifest, locales, icon and backend without user 
   }
   for(const file of [manifest.exports['.'],manifest.exports['./client'],manifest.icon]) assert.ok(existsSync(new URL(file,root)));
   const overlay=readFileSync(new URL('cordis.patch.yml',root),'utf8');
-  assert.ok(overlay.includes("name: 'dsh-deepsearch'")); assert.ok(!overlay.includes('file:'));
-  assert.equal((await import('dsh-deepsearch/package.json',{with:{type:'json'}})).default.name,manifest.name);
-  const entry=await import('dsh-deepsearch'); assert.equal(typeof entry.apply,'function');
+  assert.ok(overlay.includes("name: '@renyuluo/dsh-deepsearch'")); assert.ok(!overlay.includes('file:'));
+  assert.equal((await import('@renyuluo/dsh-deepsearch/package.json',{with:{type:'json'}})).default.name,manifest.name);
+  const entry=await import('@renyuluo/dsh-deepsearch'); assert.equal(typeof entry.apply,'function');
 });

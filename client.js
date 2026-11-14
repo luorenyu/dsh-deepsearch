@@ -1,5 +1,5 @@
 window.__ModuleLoader__.load({
-  id: 'dsh-deepsearch',
+  id: '@renyuluo/dsh-deepsearch',
   factory(require) {
     const React = require('react'), h = React.createElement;
     const MAX_RESULTS = 200;
@@ -411,7 +411,7 @@ window.__ModuleLoader__.load({
             (error || catalogError) && h('div', {className: 'deepsearch-error', role: 'alert'}, error || '目录读取失败：' + catalogError, h('button', {onClick: () => error && displayResult.cursor ? more() : setRetry(value => value + 1)}, '重试')),
             displayResult.warnings?.length > 0 && h('div', {className: 'deepsearch-warning', role: 'status'}, '部分历史读取失败（' + displayResult.warnings.length + '）；当前结果可能不完整。'),
             tab !== 'projects' && displayResult.cursor && h('button', {className: 'deepsearch-more', onClick: more, disabled: busy || result.items.length >= MAX_RESULTS}, result.items.length >= MAX_RESULTS ? '已显示 200 条，请缩小搜索范围' : busy ? '正在继续扫描…' : '继续搜索剩余历史'),
-            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.12 / 本地全文'),
+            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.13 / 本地全文'),
               h('span', {role: 'status'}, status.footer),
               h('span', {className: 'deepsearch-key-hint'}, '↑↓ 选择  ↵ 打开')));
         }
