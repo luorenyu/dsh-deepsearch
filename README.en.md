@@ -50,7 +50,7 @@ The verified host is **DSH Desktop 0.2.2-rc.3**. Other versions and platforms ha
 
 ### Install from npm (recommended)
 
-The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch). **0.1.16 has passed packaging and local installation checks, but npm publication is awaiting account two-factor authentication**; npm latest is currently 0.1.13.
+The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch). **0.1.16 is published and is the npm latest release**. Registry tarball integrity and installation in a clean directory have been verified.
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch

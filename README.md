@@ -50,7 +50,7 @@
 
 ### 从 npm 安装（推荐）
 
-公开包名为 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)。**0.1.16 已完成打包和本地安装验证，npm 发布尚待账号双重验证**；当前 npm latest 为 0.1.13。
+公开包名为 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)。**0.1.16 已公开发布，npm latest 为 0.1.16**。已核验 registry 安装包完整性及全新目录安装。
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
