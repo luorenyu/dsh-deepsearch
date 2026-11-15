@@ -4,6 +4,12 @@
 
 A local full-text search plugin for **DeepSeek Harness**. Find a conversation from a fragment you remember, without having to remember its title.
 
+[![npm](https://img.shields.io/npm/v/%40renyuluo%2Fdsh-deepsearch)](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)
+[![Release](https://img.shields.io/github/v/release/luorenyu/dsh-deepsearch)](https://github.com/luorenyu/dsh-deepsearch/releases)
+[![CI](https://github.com/luorenyu/dsh-deepsearch/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/luorenyu/dsh-deepsearch/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/luorenyu/dsh-deepsearch/blob/main/LICENSE)
+[![DeepSeek Harness plugin](https://img.shields.io/badge/DeepSeek_Harness-plugin-7356bf)](https://github.com/luorenyu/dsh-deepsearch)
+
 - **Search Chinese fragments**: literal substring matching without FTS tokenization, case-insensitive English matching, and literal punctuation.
 - **Search message content**: conversation titles, user messages, and completed final assistant replies. Results show highlighted snippets and the message's local date and time.
 - **Current conversation first**: search its newest messages first, then automatically scan the remaining conversations in batches.
