@@ -153,16 +153,18 @@ window.__ModuleLoader__.load({
       return h(React.Fragment, null, preview.text.slice(0, preview.range[0]), h('mark', null, preview.text.slice(...preview.range)), preview.text.slice(preview.range[1]));
     }
     const css = "\n.deepsearch-panel{--ds-bg:var(--we-panel-color,var(--dsw-alias-bg-base,#fff));--ds-line:var(--dsw-alias-border-l1,#e5e7eb);--ds-text:var(--dsw-alias-label-primary,#18212f);--ds-muted:var(--dsw-alias-label-secondary,#657080);--ds-hover:var(--dsw-alias-bg-layer-2,#f3f5f7);position:fixed;pointer-events:auto;z-index:10000;top:clamp(26px,12vh,128px);left:50%;transform:translateX(-50%);width:min(700px,calc(100vw - 32px));max-height:calc(100vh - clamp(26px,12vh,128px) - 24px);display:flex;flex-direction:column;color:var(--ds-text);background:var(--ds-bg);background:var(--ds-effective-surface,var(--ds-surface,var(--ds-bg)));backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none));-webkit-backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none));border:1px solid var(--ds-line);border-radius:16px;box-shadow:0 16px 60px #0002,0 2px 8px #0001;font-family:inherit;overflow:hidden;text-align:left;isolation:isolate}\n.deepsearch-panel *{box-sizing:border-box}.deepsearch-panel button,.deepsearch-panel input,.deepsearch-panel select,.deepsearch-jump button{font:inherit;color:inherit}.deepsearch-panel button{cursor:pointer}.deepsearch-panel button:disabled{cursor:default;opacity:.6}.deepsearch-panel button:focus-visible,.deepsearch-panel select:focus-visible,.deepsearch-jump button:focus-visible{outline:2px solid var(--dsw-alias-brand-primary,#3478f6);outline-offset:-2px}.deepsearch-search{display:flex;align-items:center;gap:14px;padding:19px 20px 17px;color:var(--ds-muted)}.deepsearch-search>input{min-width:0;flex:1;border:0;outline:none;background:transparent;font-size:18px;line-height:28px;color:var(--ds-text)}.deepsearch-search>input::placeholder{color:var(--ds-muted);opacity:.8}.deepsearch-escape{border:1px solid var(--ds-line);border-radius:5px;padding:2px 6px;background:none;font-size:11px!important;color:var(--ds-muted)!important}.deepsearch-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px 11px;border-bottom:1px solid var(--ds-line)}.deepsearch-tabs{display:flex;gap:4px}.deepsearch-tabs button{border:0;border-radius:6px;background:none;font-size:12px;padding:6px 12px;color:var(--ds-muted)}.deepsearch-tabs button[aria-selected=true]{background:var(--ds-hover);color:var(--ds-text);font-weight:600}.deepsearch-toolbar select{max-width:190px;min-width:0;border:0;outline:none;background:var(--ds-bg);font-size:11px;color:var(--ds-muted);padding:5px}.deepsearch-caption{display:flex;justify-content:space-between;gap:12px;padding:13px 20px 7px;font-size:11px;color:var(--ds-muted)}.deepsearch-caption label{display:flex;align-items:center;gap:4px;cursor:pointer}.deepsearch-caption input{margin:0;width:12px;height:12px;accent-color:var(--dsw-alias-brand-primary,#3478f6)}.deepsearch-results{overflow-y:auto;overscroll-behavior:contain;max-height:min(440px,50vh);padding:0 8px 8px;scroll-padding:8px;min-height:80px}.deepsearch-result{display:flex;width:100%;gap:12px;align-items:flex-start;border:0;border-radius:8px;background:transparent;padding:12px;text-align:left}.deepsearch-result[aria-selected=true]{background:var(--ds-hover)}.deepsearch-result-icon{color:var(--ds-muted);padding-top:2px;flex:none}.deepsearch-result-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.deepsearch-result-title{font-size:13px;line-height:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.deepsearch-snippet{font-size:12px;line-height:1.7;color:var(--ds-muted);white-space:pre-wrap;overflow-wrap:anywhere;display:block}.deepsearch-snippet mark{background:#ffe293;color:#382a09;border-radius:2px;padding:0 1px}.deepsearch-meta{font-size:10px;line-height:17px;color:var(--ds-muted);opacity:.85}.deepsearch-return{font-size:14px;align-self:center;color:var(--ds-muted);opacity:0}.deepsearch-result[aria-selected=true] .deepsearch-return{opacity:1}.deepsearch-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--ds-line);padding:12px 20px;color:var(--ds-muted);font-size:10px}.deepsearch-footer strong{font-weight:600;color:var(--ds-text)}.deepsearch-empty{display:flex;align-items:center;flex-direction:column;gap:12px;padding:37px 18px 32px;color:var(--ds-muted)}.deepsearch-empty>svg{width:27px;height:27px;opacity:.5}.deepsearch-empty strong{font-size:13px;font-weight:500;color:var(--ds-text)}.deepsearch-empty p{font-size:11px;margin:0;text-align:center}.deepsearch-error,.deepsearch-warning{padding:8px 20px;font-size:11px;color:var(--ds-text);background:var(--ds-hover)}.deepsearch-error button{margin-left:8px;border:0;background:none;text-decoration:underline}.deepsearch-more{background:transparent;border:0;border-top:1px solid var(--ds-line);padding:10px;font-size:11px;color:var(--ds-muted)}.deepsearch-jump{display:flex;flex-direction:column;flex:1;min-height:0;height:100%;position:relative}.deepsearch-jump-bar{display:flex;align-items:center;gap:12px;padding:9px 18px;flex-shrink:0;border-bottom:1px solid var(--dsw-alias-border-l1,#ddd);font-size:11px;color:var(--dsw-alias-label-secondary,#667);background:var(--dsw-alias-bg-base,#fff)}.deepsearch-jump-bar>span{flex:1}.deepsearch-jump button,.deepsearch-jump-loading button{border:1px solid var(--dsw-alias-border-l1,#ddd);border-radius:5px;background:var(--dsw-alias-bg-base,#fff);font:inherit;color:inherit;padding:3px 7px;cursor:pointer}.deepsearch-jump-loading{padding:24px;font:inherit;color:var(--dsw-alias-label-primary,#18212f)}.deepsearch-jump *::highlight(deepsearch-hit){background:#ffe293;color:#382a09}\n@media(max-width:520px){.deepsearch-panel{top:18px;width:calc(100vw - 20px);border-radius:12px}.deepsearch-search{padding:14px;gap:10px}.deepsearch-search>input{font-size:16px}.deepsearch-toolbar{padding:0 10px 10px}.deepsearch-toolbar select{max-width:130px}.deepsearch-caption{padding-left:14px;padding-right:14px}.deepsearch-footer{padding:11px 14px}.deepsearch-key-hint{display:none}.deepsearch-jump-bar{flex-wrap:wrap}}\n";
+    const archiveCss = '.deepsearch-archived{display:inline-block;margin-left:8px;padding:1px 5px;border:1px solid var(--ds-line);border-radius:4px;font-size:11px;font-weight:400;color:var(--ds-muted);vertical-align:middle}.deepsearch-confirm{padding:14px 20px;border-top:1px solid var(--ds-line);font-size:13px}.deepsearch-confirm p{margin:6px 0 10px;color:var(--ds-muted)}.deepsearch-confirm button{padding:6px 10px;margin-right:8px;border:1px solid var(--ds-line);border-radius:6px;background:var(--ds-hover)}';
     const appearanceCss = '.deepsearch-appearance{display:flex;flex-wrap:wrap;gap:12px;padding:12px 20px 16px;border-top:1px solid var(--ds-line);font-size:12px}.deepsearch-appearance label{display:flex;align-items:center;gap:8px}.deepsearch-appearance select,.deepsearch-appearance button{background:var(--ds-hover);border:1px solid var(--ds-line);border-radius:6px;padding:5px}.deepsearch-appearance input[type=range]{width:100px;accent-color:var(--dsw-alias-brand-primary,#3478f6)}.deepsearch-appearance input[type=color]{width:30px;height:24px;padding:0;border:0;background:none}.deepsearch-appearance p{width:100%;margin:0;color:var(--ds-muted)}/* Wallpaper Engine intentionally solidifies ordinary ARIA dialogs. Only this owned panel opts back into its selected material; never forge its runtime markers or change global settings. */body[data-we-glass-page][data-we-floater-solid] .deepsearch-panel[role=dialog][data-appearance]{background-color:var(--ds-effective-surface,var(--ds-surface,var(--ds-bg)))!important;backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none))!important;-webkit-backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none))!important}@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.deepsearch-panel{--ds-effective-surface:var(--ds-bg);--ds-effective-filter:none}}@media(prefers-reduced-transparency:reduce){.deepsearch-panel{--ds-effective-surface:var(--ds-bg);--ds-effective-filter:none}}';
     return {
-      inject: ['slots', 'layout', 'uiWorkspace', 'uiSession', 'sessions'],
+      inject: ['slots', 'layout', 'uiWorkspace', 'uiSession', 'sessions', 'workspaces'],
       apply(ctx) {
-        let opened = false, intent = null, releaseShell, previousFocus, preferredSessionId;
-        const listeners = new Set();
+        let opened = false, intent = null, releaseShell, previousFocus, preferredSessionId, selectionEpoch = 0, disposed = false;
+        const listeners = new Set(), recoveries = new Map();
         const notify = () => { for (const listener of listeners) listener(); };
         const subscribe = listener => { listeners.add(listener); return () => listeners.delete(listener); };
         const setOpen = value => {
           if (value && !opened) {previousFocus = document.activeElement; preferredSessionId = currentSessionId(ctx.uiSession.adapter.current.getSnapshot(), ctx.sessions.list.getSnapshot());}
+          if (!value) selectionEpoch++;
           opened = value; notify();
           if (!value && previousFocus?.isConnected) previousFocus.focus?.({preventScroll: true});
         };
@@ -189,7 +191,16 @@ window.__ModuleLoader__.load({
             throw failure;
           }
         }
+        function archiveState(sessionId) {
+          const snapshot = ctx.workspaces?.list?.getSnapshot();
+          if (snapshot?.phase !== 'ready' || snapshot.state !== 'idle' || !Array.isArray(snapshot.archivedSessionIds)) throw new Error('无法确认会话归档状态，请等待工作区加载后重试');
+          return snapshot.archivedSessionIds.includes(sessionId);
+        }
         function beginJump(item, query) {
+          // Defense in depth: even imperative callers cannot reopen a known archived session.
+          if (disposed) throw new Error('搜索已关闭');
+          if (recoveries.has(item.sessionId)) throw new Error('恢复请求仍在进行，请等待完成后重试');
+          if (ctx.workspaces?.list && archiveState(item.sessionId)) throw new Error('会话已归档，请先确认恢复并打开');
           clearIntent();
           ctx.uiWorkspace.openSession(item.sessionId); ctx.layout.selectPanel(null);
           if (!Number.isSafeInteger(item.seq)) {setOpen(false); return;}
@@ -306,6 +317,9 @@ window.__ModuleLoader__.load({
           const [busy, setBusy] = React.useState(false), [error, setError] = React.useState(''), [index, setIndex] = React.useState(0), [retry, setRetry] = React.useState(0);
           const panel = React.useRef(null), input = React.useRef(null), list = React.useRef(null), control = React.useRef(null), generation = React.useRef(0), requestRef = React.useRef(null);
           const [composing, setComposing] = React.useState(false);
+          const [confirmation, setConfirmation] = React.useState(null), [openError, setOpenError] = React.useState('');
+          const selection = React.useRef(null);
+          const cancelSelection = () => {selection.current?.cancel?.(); selection.current = null; setConfirmation(null); setOpenError('');};
           const [appearance, setAppearance] = React.useState(() => {try {return readAppearance(window.localStorage);} catch {return appearancePrefs(null);}});
           const [settings, setSettings] = React.useState(false), [appearanceError, setAppearanceError] = React.useState('');
           const updateAppearance = value => {
@@ -319,6 +333,7 @@ window.__ModuleLoader__.load({
           const key = JSON.stringify(request);
           const renderKey = JSON.stringify([key, tab, visible, composing, retry]);
           const activeRender = React.useRef(renderKey); activeRender.current = renderKey;
+          React.useEffect(() => {cancelSelection(); return () => {selection.current?.cancel?.(); selection.current = null;};}, [renderKey]);
           React.useEffect(() => {
             if (!visible) return;
             input.current?.focus();
@@ -355,13 +370,56 @@ window.__ModuleLoader__.load({
           React.useEffect(() => {setIndex(old => Math.min(old, Math.max(0, items.length - 1)));}, [items.length]);
           React.useEffect(() => {list.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({block: 'nearest'});}, [index]);
           function choose(item) {
-            if (!item) return;
+            if (!item || !opened || disposed || activeRender.current !== renderKey) return;
+            if (selection.current?.pending) return;
+            cancelSelection();
             if (item.kind === 'project') {setWorkspace(item.id); setTab('conversations'); setQuery(''); input.current?.focus(); return;}
-            try {beginJump(item, request.query);} catch (failure) {setError('打开失败：' + failure.message);}
+            try {
+              const isArchived = archiveState(item.sessionId);
+              if (!isArchived && recoveries.has(item.sessionId)) throw new Error('恢复请求仍在进行，请等待完成后重试');
+              if (isArchived) {
+                const selected = {item, query: request.query, renderOwner: renderKey, epoch: selectionEpoch};
+                selection.current = selected; setConfirmation(selected); return;
+              }
+              beginJump(item, request.query);
+            } catch (failure) {setOpenError('打开失败：' + failure.message);}
+          }
+          async function restoreAndOpen() {
+            const selected = selection.current;
+            const current = () => selected && selection.current === selected && !disposed && opened && selectionEpoch === selected.epoch && activeRender.current === selected.renderOwner;
+            if (!current() || selected.pending) return;
+            selected.pending = true; setConfirmation({...selected}); setOpenError('');
+            let timer;
+            try {
+              const stillArchived = archiveState(selected.item.sessionId);
+              let recovery = recoveries.get(selected.item.sessionId);
+              if (stillArchived || recovery) {
+                if (!recovery) {
+                  if (recoveries.size >= 4) throw new Error('已有多个恢复请求正在进行，请等待完成后重试');
+                  if (typeof ctx.uiWorkspace.unarchiveSession !== 'function') throw new Error('当前宿主不支持恢复归档会话，请升级后重试');
+                  recovery = Promise.resolve(ctx.uiWorkspace.unarchiveSession(selected.item.sessionId));
+                  recoveries.set(selected.item.sessionId, recovery);
+                  const finished = () => {if (recoveries.get(selected.item.sessionId) === recovery) recoveries.delete(selected.item.sessionId);};
+                  recovery.then(finished, finished);
+                }
+                // A timeout/cancel stops this navigation, not the host's already submitted recovery.
+                await new Promise((resolve, reject) => {
+                  selected.cancel = () => {clearTimeout(timer); resolve();};
+                  timer = setTimeout(() => reject(new Error('恢复超时；请求可能仍在完成，请刷新归档状态后重试')), 15000);
+                  recovery.then(resolve, reject);
+                });
+              }
+              if (!current()) return;
+              if (archiveState(selected.item.sessionId)) throw new Error('恢复尚未确认，会话仍在归档中；请刷新归档状态后重试');
+              beginJump(selected.item, selected.query);
+            } catch (failure) {
+              if (current()) {selected.pending = false; setConfirmation({...selected}); setOpenError('恢复失败：' + failure.message);}
+            } finally {clearTimeout(timer); selected.cancel = undefined;}
           }
           if (!visible) return null;
           const more = () => {
             if (busy || !result.cursor || result.items.length >= MAX_RESULTS) return;
+            cancelSelection();
             control.current?.abort(); const controller = new AbortController(); control.current = controller;
             const owner = ++generation.current; setBusy(true); setError('');
             fetchPage(result.cursor, true, owner, request, controller, renderKey);
@@ -370,9 +428,9 @@ window.__ModuleLoader__.load({
           const status = searchStatus({busy: busy || (request.query && tab !== 'projects' && !composing && result.renderOwner !== renderKey && !error), error, result: displayResult, query: request.query, projects: tab === 'projects'});
           function onKey(event) {
             if (event.isComposing || event.nativeEvent?.isComposing || event.keyCode === 229 || composing) return;
-            if (event.key === 'Escape') {event.preventDefault(); event.stopPropagation(); setOpen(false);}
+            if (event.key === 'Escape') {event.preventDefault(); event.stopPropagation(); if (selection.current) cancelSelection(); else setOpen(false);}
             if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && event.target === input.current) {event.preventDefault(); setIndex(old => items.length ? (old + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length : 0);}
-            if (event.key === 'Enter' && event.target === input.current) {event.preventDefault(); choose(items[index]);}
+            if (event.key === 'Enter' && event.target === input.current) {event.preventDefault(); if (!selection.current) choose(items[index]);}
             if (event.key === 'Tab') {
               const focusable = [...panel.current.querySelectorAll('button:not(:disabled),input,select,[tabindex="0"]')].filter(node => node.tabIndex >= 0 && !node.closest('[hidden],[inert]') && node.getClientRects().length > 0);
               const first = focusable[0], last = focusable[focusable.length - 1];
@@ -381,9 +439,9 @@ window.__ModuleLoader__.load({
             }
           }
           return h('section', {className: 'deepsearch-panel', style: appearanceStyle(appearance), 'data-appearance': appearance.mode, role: 'dialog', 'aria-label': 'DeepSearch 全文搜索', 'aria-modal': false, ref: panel, onKeyDown: onKey},
-            h('style', null, css + appearanceCss),
+            h('style', null, css + appearanceCss + archiveCss),
             h('header', {className: 'deepsearch-search'}, h(Icon),
-              h('input', {ref: input, value: query, maxLength: 256, placeholder: '搜索对话里的任何一句话…', 'aria-label': '搜索会话正文', role: 'combobox', 'aria-expanded': true, 'aria-controls': 'deepsearch-results', 'aria-activedescendant': items[index] ? 'deepsearch-result-' + index : undefined, autoComplete: 'off', spellCheck: false, onChange: event => setQuery(event.target.value), onCompositionStart: () => setComposing(true), onCompositionEnd: () => setComposing(false)}),
+              h('input', {ref: input, value: query, maxLength: 256, placeholder: '搜索对话里的任何一句话…', 'aria-label': '搜索会话正文', role: 'combobox', 'aria-expanded': true, 'aria-controls': 'deepsearch-results', 'aria-activedescendant': items[index] ? 'deepsearch-result-' + index : undefined, autoComplete: 'off', spellCheck: false, onChange: event => {cancelSelection(); setQuery(event.target.value);}, onCompositionStart: () => {cancelSelection(); setComposing(true);}, onCompositionEnd: () => setComposing(false)}),
               h('button', {className: 'deepsearch-escape', 'aria-expanded': settings, 'aria-controls': 'deepsearch-appearance', onClick: () => setSettings(value => !value)}, '外观'),
               h('button', {className: 'deepsearch-escape', onClick: () => setOpen(false), 'aria-label': '关闭 DeepSearch'}, 'esc')),
             settings && h('div', {className: 'deepsearch-appearance', id: 'deepsearch-appearance', role: 'group', 'aria-label': '面板外观'},
@@ -395,30 +453,36 @@ window.__ModuleLoader__.load({
               h('button', {onClick:()=>updateAppearance(null)}, '恢复默认'),
               appearanceError && h('p', {role:'status'}, appearanceError)),
             h('div', {className: 'deepsearch-toolbar'}, h('div', {className: 'deepsearch-tabs', role: 'tablist', 'aria-label': '结果类型'},
-              ...[['all', '全部'], ['conversations', '对话'], ['projects', '项目']].map(([value, label]) => h('button', {key: value, role: 'tab', 'aria-selected': tab === value, onClick: () => setTab(value)}, label))),
-              h('select', {'aria-label': '工作区范围', value: workspace, onChange: event => setWorkspace(event.target.value)}, h('option', {value: ''}, '所有工作区'), ...(catalog.workspaces || []).map(project => h('option', {key: project.id, value: project.id}, project.title)))),
+              ...[['all', '全部'], ['conversations', '对话'], ['projects', '项目']].map(([value, label]) => h('button', {key: value, role: 'tab', 'aria-selected': tab === value, onClick: () => {cancelSelection(); setTab(value);}}, label))),
+              h('select', {'aria-label': '工作区范围', value: workspace, onChange: event => {cancelSelection(); setWorkspace(event.target.value);}}, h('option', {value: ''}, '所有工作区'), ...(catalog.workspaces || []).map(project => h('option', {key: project.id, value: project.id}, project.title)))),
             h('div', {className: 'deepsearch-caption'}, h('span', null, request.query ? (tab === 'projects' ? '匹配项目' : '标题 · 你的输入 · 助手回复') : '最近对话'),
-              tab !== 'projects' && h('label', null, h('input', {type: 'checkbox', checked: archived, onChange: event => setArchived(event.target.checked)}), '含归档')),
+              tab !== 'projects' && h('label', null, h('input', {type: 'checkbox', checked: archived, onChange: event => {cancelSelection(); setArchived(event.target.checked);}}), '含归档')),
             h('div', {className: 'deepsearch-results', ref: list, role: 'listbox', id: 'deepsearch-results', 'aria-label': '搜索结果', 'aria-busy': busy},
               ...items.map((item, i) => h('button', {key: item.id, id: 'deepsearch-result-' + i, className: 'deepsearch-result', tabIndex: -1, role: 'option', 'aria-selected': index === i, onMouseEnter: () => setIndex(i), onClick: () => choose(item)},
                 h('span', {className: 'deepsearch-result-icon'}, h(Icon, {folder: item.kind === 'project'})),
-                h('span', {className: 'deepsearch-result-text'}, h('span', {className: 'deepsearch-result-title'}, item.title || '未命名会话'),
+                h('span', {className: 'deepsearch-result-text'}, h('span', {className: 'deepsearch-result-title'}, item.title || '未命名会话', item.archived === true && h('span', {className: 'deepsearch-archived'}, '已归档')),
                   item.snippet && h('span', {className: 'deepsearch-snippet'}, h(Mark, {text: item.snippet, range: item.range})),
                   h('span', {className: 'deepsearch-meta'}, item.kind === 'project' ? '工作区 · 点击限定搜索范围' :
                     [item.role === 'user' ? '你' : item.role === 'assistant' ? '助手' : '会话标题', item.workspaceTitle, formatMessageTime(item.time)].filter(Boolean).join(' · '))), h('span', {className: 'deepsearch-return', 'aria-hidden': true}, '↵'))),
               !items.length && h('div', {className: 'deepsearch-empty', role: 'status'}, h(Icon), h('strong', null, status.empty),
                 h('p', null, busy ? '逐批读取本地历史，不上传你的对话。' : request.query ? '支持连续中文片段，不需要输入整句话。' : '中文片段、英文关键词，都可以。'))),
+            confirmation && h('div', {className: 'deepsearch-confirm', role: 'group', 'aria-label': '恢复归档会话', 'aria-busy': !!confirmation.pending},
+              h('strong', null, '此会话已归档'),
+              h('p', null, '恢复“' + (confirmation.item.title || '未命名会话') + '”后将在原生会话中打开；取消会保留当前结果。'),
+              h('button', {onClick: restoreAndOpen, disabled: !!confirmation.pending}, confirmation.pending ? '正在恢复…' : '恢复并打开'),
+              h('button', {onClick: cancelSelection}, '取消')),
+            openError && h('div', {className: 'deepsearch-error', role: 'alert'}, openError),
             (error || catalogError) && h('div', {className: 'deepsearch-error', role: 'alert'}, error || '目录读取失败：' + catalogError, h('button', {onClick: () => error && displayResult.cursor ? more() : setRetry(value => value + 1)}, '重试')),
             displayResult.warnings?.length > 0 && h('div', {className: 'deepsearch-warning', role: 'status'}, '部分历史读取失败（' + displayResult.warnings.length + '）；当前结果可能不完整。'),
             tab !== 'projects' && displayResult.cursor && h('button', {className: 'deepsearch-more', onClick: more, disabled: busy || result.items.length >= MAX_RESULTS}, result.items.length >= MAX_RESULTS ? '已显示 200 条，请缩小搜索范围' : busy ? '正在继续扫描…' : '继续搜索剩余历史'),
-            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.13 / 本地全文'),
+            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.14 / 本地全文'),
               h('span', {role: 'status'}, status.footer),
               h('span', {className: 'deepsearch-key-hint'}, '↑↓ 选择  ↵ 打开')));
         }
         ctx.effect(() => {
           const onKey = event => {if (!isShortcut(event)) return; event.preventDefault(); event.stopPropagation(); setOpen(!opened);};
           window.addEventListener('keydown', onKey, true);
-          return () => {window.removeEventListener('keydown', onKey, true); setOpen(false); clearIntent();};
+          return () => {disposed = true; window.removeEventListener('keydown', onKey, true); setOpen(false); clearIntent();};
         });
         ctx.slots.inject('shell.overlay', () => ctx.slots.register({name: 'shell.overlay', id: 'deepsearch'}, Overlay));
       }

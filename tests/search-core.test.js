@@ -111,11 +111,72 @@ test('catalog includes cold normal history, excludes subagents blank archived, m
   const rows = [{id: 'a', title: 'A', cwd: '/project', events: []}, {id: 'b', title: 'B', cwd: '/project/sub', events: [], cold: true},
     {id: 'archived', title: 'arch', events: []}, {id: 'agent', origin: 'subagent', events: []}, {id: 'blank', blank: true, events: []}];
   const {service, counts} = fixture(rows, {items: [{workspaceId: 'w', title: 'Project', path: '/project', sessionIds: []}], archived: ['archived']});
-  assert.deepEqual(await service.catalog(), {workspaces: [{id: 'w', title: 'Project'}], sessions: [{id: 'a', title: 'A', workspaceId: 'w'}, {id: 'b', title: 'B'}]});
+  assert.deepEqual(await service.catalog(), {workspaces: [{id: 'w', title: 'Project'}], sessions: [{id: 'a', title: 'A', archived: false, workspaceId: 'w'}, {id: 'b', title: 'B', archived: false}]});
   assert.equal(counts.observed.length, 0);
   assert.equal((await service.search({query: 'arch', includeArchived: true})).items.length, 1);
   await assert.rejects(service.search({query: 'x', sessionId: 'agent'}), /excluded/);
   await assert.rejects(service.search({query: 'x', sessionId: 'b', workspaceId: 'w'}), /belong/);
+});
+
+test('title and message results explicitly report archived status with filters and scopes', async () => {
+  for (const archivedCold of [false, true]) {
+    const messages = [user('needle input'), event('turn/start', {turn: 't'}, 2), assistant('needle final', 3),
+      event('turn/end', {turn: 't', reason: {kind: 'completed'}}, 4)];
+    const {service} = fixture([
+      {id: 'active', title: 'needle active', events: messages, cold: !archivedCold},
+      {id: 'archived', title: 'needle archived', events: messages, cold: archivedCold},
+      {id: 'outside', title: 'needle outside', events: messages},
+    ], {items: [{workspaceId: 'w', title: 'Project', sessionIds: ['active', 'archived']}], archived: ['archived']});
+    const cases = [
+      [{}, ['active', 'outside']],
+      [{includeArchived: false}, ['active', 'outside']],
+      [{includeArchived: true}, ['active', 'archived', 'outside']],
+      [{workspaceId: 'w'}, ['active']],
+      [{workspaceId: 'w', includeArchived: false}, ['active']],
+      [{workspaceId: 'w', includeArchived: true}, ['active', 'archived']],
+      [{sessionId: 'active', workspaceId: 'w', includeArchived: true}, ['active']],
+      [{sessionId: 'archived', workspaceId: 'w', includeArchived: true}, ['archived']],
+    ];
+    for (const [scope, ids] of cases) {
+      const result = await service.search({query: 'needle', ...scope});
+      assert.equal(result.totalSessions, ids.length);
+      assert.deepEqual(result.items.map(item => [item.sessionId, item.kind, item.role, item.archived]),
+        ids.flatMap(id => [['title', undefined], ['message', 'assistant'], ['message', 'user']]
+          .map(([kind, role]) => [id, kind, role, id === 'archived'])));
+    }
+    for (const includeArchived of [undefined, false]) {
+      await assert.rejects(service.search({query: 'needle', sessionId: 'archived', includeArchived}), /excluded/);
+    }
+    await assert.rejects(service.search({query: 'needle', sessionId: 'outside', workspaceId: 'w', includeArchived: true}), /belong/);
+    service.dispose();
+  }
+});
+
+test('cursor pages retain archived metadata and filtering from the initial catalog snapshot', async () => {
+  for (const includeArchived of [false, true]) {
+    const workspace = {items: [{workspaceId: 'w', title: 'Project', sessionIds: ['active', 'archived']}], archived: ['archived']};
+    const {ctx} = fixture([
+      {id: 'active', title: 'needle active', events: [user('needle active body')]},
+      {id: 'archived', title: 'needle archived', events: [user('needle archived body')]},
+    ], workspace);
+    const service = createSearchService(ctx, {pageSize: 1});
+    const input = {query: 'needle', workspaceId: 'w', includeArchived};
+    const first = await service.search(input);
+    assert.ok(first.cursor);
+    assert.deepEqual(first.items.map(item => [item.sessionId, item.kind, item.archived]), [['active', 'title', false]]);
+    workspace.archived = ['active'];
+    await assert.rejects(service.search({...input, includeArchived: !includeArchived, cursor: first.cursor}),
+      error => error.code === 'CURSOR_MISMATCH');
+    const remaining = await allPages(service, {...input, cursor: first.cursor});
+    const originalIds = includeArchived ? ['active', 'archived'] : ['active'];
+    assert.deepEqual([...first.items, ...remaining.items].map(item => [item.sessionId, item.kind, item.archived]),
+      originalIds.flatMap(id => ['title', 'message'].map(kind => [id, kind, id === 'archived'])));
+    const refreshed = await allPages(service, input);
+    const refreshedIds = includeArchived ? ['active', 'archived'] : ['archived'];
+    assert.deepEqual(refreshed.items.map(item => [item.sessionId, item.kind, item.archived]),
+      refreshedIds.flatMap(id => ['title', 'message'].map(kind => [id, kind, id === 'active'])));
+    service.dispose();
+  }
 });
 
 test('cursor is scope-bound, single-use, expires or evicts within bounded cache', async () => {

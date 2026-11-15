@@ -125,9 +125,9 @@ async function readCatalog(services, includeArchived, signal) {
     check(signal);
     if (seen.has(header.id)) continue;
     seen.add(header.id);
-    const row = metadata.get(header.id);
-    if (header.origin === 'subagent' || row?.origin === 'subagent' || row?.blank || (!includeArchived && archived.has(header.id))) continue;
-    rows.push({id: header.id, title: row?.projections?.values?.title, updatedAt: row?.updatedAt ?? header.createdAt ?? 0,
+    const row = metadata.get(header.id), isArchived = archived.has(header.id);
+    if (header.origin === 'subagent' || row?.origin === 'subagent' || row?.blank || (!includeArchived && isArchived)) continue;
+    rows.push({id: header.id, title: row?.projections?.values?.title, archived: isArchived, updatedAt: row?.updatedAt ?? header.createdAt ?? 0,
       workspaceId: membership.has(header.id) ? membership.get(header.id) : roots.get(pathKey(row?.cwd ?? header.cwd))});
   }
   const missing = rows.filter(row => row.title == null);
@@ -215,7 +215,7 @@ export function createSearchService(services, options = {}) {
       try {
         const {rows, workspaces} = await readCatalog(services, false, signal);
         check(signal);
-        return {workspaces, sessions: rows.map(({id, title, workspaceId}) => ({id, title: title.slice(0, 512), ...(workspaceId ? {workspaceId} : {})}))};
+        return {workspaces, sessions: rows.map(({id, title, archived, workspaceId}) => ({id, title: title.slice(0, 512), archived, ...(workspaceId ? {workspaceId} : {})}))};
       } finally {operation.finish();}
     },
     async search(raw, signal) {
@@ -250,7 +250,7 @@ export function createSearchService(services, options = {}) {
         while (state.session < state.rows.length && items.length < limits.pageSize && sessions < limits.sessionsPerPage && visited < limits.eventsPerPage) {
           check(signal);
           const row = state.rows[state.session], position = state.position;
-          const common = {sessionId: row.id, title: row.title.slice(0, 512), ...(row.workspaceId ? {workspaceId: row.workspaceId,
+          const common = {sessionId: row.id, title: row.title.slice(0, 512), archived: row.archived, ...(row.workspaceId ? {workspaceId: row.workspaceId,
             workspaceTitle: state.workspaces.find(workspace => workspace.id === row.workspaceId)?.title} : {})};
           if (!position.titleDone) {
             const match = await literalSnippet(row.title, input.query, signal); position.titleDone = true;

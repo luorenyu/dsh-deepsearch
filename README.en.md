@@ -9,7 +9,7 @@ A local full-text search plugin for **DeepSeek Harness**. Find a conversation fr
 - **Current conversation first**: search its newest messages first, then automatically scan the remaining conversations in batches.
 - **Native conversation navigation**: open the original DSH conversation, load the exact message, and attempt to scroll to and highlight it—without replacing the conversation view.
 - **Scope and appearance controls**: project/workspace filters, optional archived conversations, frosted glass, host theme, and custom color, opacity, and blur.
-- **No chat uploads**: reuse the host's authentication and history services, with no additional production listener or changes to your messages.
+- **No chat uploads**: reuse the host's authentication and history services with no additional production listener. Messages are never edited; archive state changes only after explicit restoration confirmation.
 
 ## Feature Preview
 
@@ -96,6 +96,12 @@ DeepSearch does not take over DSH's native `⌘K` shortcut or the `⌘F` shortcu
 Enter a Chinese fragment or an English keyword. Search continues automatically, with results appearing as each batch is scanned—no manual paging is required. “No results” is shown only after a complete scan finds no matches. Read failures, timeouts, incomplete scans, and the 200-result limit are reported separately. Changing the query or closing the panel cancels the previous task.
 
 Opening a message result takes you to the native conversation. The plugin verifies the exact message using `sessionId + seq`, then attempts to locate and highlight the corresponding native row. The status area lets you return to search or clear the highlight. Switching conversations or feature pages releases navigation resources. Title results only open the conversation; they do not claim successful message positioning.
+
+### Opening archived results
+
+With “含归档” (Include archived) enabled, archived title and message hits display an **“已归档”** badge. Selecting one keeps the results visible and asks for confirmation. Only **“恢复并打开” (Restore and open)** calls the host unarchive command, then opens the native conversation and attempts message positioning. Cancel does not change archive state.
+
+Failures or timeouts keep results visible with an error. DeepSearch does not silently navigate or automatically rearchive. An issued restoration request cannot necessarily be withdrawn: closing the panel or changing the query cancels subsequent navigation, but the host may still finish the explicitly confirmed restoration.
 
 ## Appearance
 

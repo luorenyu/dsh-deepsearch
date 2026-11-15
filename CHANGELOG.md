@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.14
+
+- Mark archived title and message hits with an explicit “已归档” badge.
+- Confirm restoration before opening archived results in the native conversation.
+- Recheck live workspace state and keep search results visible when restoration fails or is cancelled.
+- Prevent duplicate restoration and stale navigation after closing or changing search scope.
+
 ## 0.1.13
 
 - Publish the public npm package as `@renyuluo/dsh-deepsearch`; the unscoped package belongs to another author.
