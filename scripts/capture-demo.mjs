@@ -105,6 +105,12 @@ try {
  await browser('find','role','button','click','--name','搜索面板：中文检索体验','--exact');
  await browser('wait','--fn','JSON.parse(localStorage.getItem("dsh-deepsearch.manual-unread.v1")).ids.length===0 && document.querySelectorAll(".demo-session-row [aria-label=手动未读]").length===0');
  const unreadChecks={defaultDisabled:true,markUnread:true,markRead:true,autoReadOnMockMainViewReentry:true};
+ // Keep real-component behavioral evidence separate from the publication illustration.
+ await writeFile(path.join(output,'component-unread-evidence.png'),await readFile(path.join(output,'08-unread-menu.png')));
+ await exec(process.execPath,[path.join(root,'scripts/render-unread-card.mjs')],{env,maxBuffer:4*1024*1024,timeout:120000});
+ const publication=records.find(record=>record.file==='08-unread-menu.png');
+ publication.behavioralEvidenceImage='component-unread-evidence.png';
+ publication.presentation='Approved fictional sidebar illustration inside matching feature card, not runtime evidence';
  await writeFile(path.join(output,'screenshots.json'),JSON.stringify(records.map(record=>'docs/images/'+record.file),null,2)+'\n');
  const errors=await browser('errors');
  if(errors && !errors.includes('No errors'))throw new Error('Browser errors: '+errors);

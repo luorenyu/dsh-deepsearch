@@ -34,7 +34,7 @@ The isolated host intentionally rejects native session navigation. Only project 
 5. `05-theme.png`: actual 跟随 DSH controls with mocked dark host tokens.
 6. `06-custom.png`: actual custom color, opacity and blur controls.
 7. `07-unread-settings.png`: actual 设置 / 会话未读标记 switch, enabled through a browser click.
-8. `08-unread-menu.png`: actual plugin context-menu resolver/action and registered leading-slot component. One invented row is marked unread; a second row has the 标记为未读 menu open. Sidebar/menu framing and StateDot visual are mocked and explicitly disclosed in the image.
+8. `08-unread-menu.png`: approved fictional sidebar illustration inside the same feature-card frame as the other images. Re-render with `node scripts/render-unread-card.mjs`. This image is not component/runtime evidence. The separate `component-unread-evidence.png` preserves the actual plugin menu/leading-slot mock-host capture used for behavioral checks. Scene source: `unread-scene.html`; the card embeds that scene as srcdoc in `unread-card.html`.
 
 The capture also exercises 标记为已读, marks the fictional row again, and clicks it to simulate a `mainView` re-entry. The actual plugin subscription clears its persisted mark and unmounts the leading dot. This is a mocked host transition, not proof of native host navigation.
 

@@ -14,7 +14,7 @@ A local full-text search plugin for **DeepSeek Harness**. Find a conversation fr
 
 ## Feature Preview
 
-These images use the **actual plugin components in an isolated mock host with fictional demo data**. They are not screenshots of your chats or the native DSH conversation page. Native message navigation must be verified in the real host; the demo does not simulate successful navigation. The screenshots show the Chinese UI; this English README does not change the plugin's interface language.
+Except for the explicitly labeled sidebar illustration, these images use the **actual plugin components in an isolated mock host with fictional demo data**. They are not screenshots of your chats or the native DSH conversation page. Native message navigation must be verified in the real host; the demo does not simulate successful navigation. The screenshots show the Chinese UI; this English README does not change the plugin's interface language.
 
 ### Full-text search, highlighted snippets, and message timestamps
 
@@ -38,11 +38,11 @@ These images use the **actual plugin components in an isolated mock host with fi
 
 ### Optional extension: manual unread
 
-Enable it in Settings, then mark a sidebar conversation unread/read from its context menu. Re-entering the conversation clears the mark. Preferences and marks remain local to this client. The sidebar, menu frame and status-dot primitive below are mocked host scaffolding; the switch and unread menu logic come from the actual plugin.
+Enable it in Settings, then mark a sidebar conversation unread/read from its context menu. Re-entering the conversation clears the mark. Preferences and marks remain local to this client. The settings image uses the actual plugin component. The context-menu image places a faithful fictional sidebar illustration inside the matching feature-card frame; it is not a native screenshot or runtime-verification evidence.
 
 ![Enable manual unread in Settings](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/07-unread-settings.png)
 
-![Session context menu and leading unread indicator demonstration](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/08-unread-menu.png)
+![Session context menu and leading unread indicator demonstration](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16-docs.1/docs/images/08-unread-menu.png)
 
 ## Installation
 
@@ -50,7 +50,7 @@ The verified host is **DSH Desktop 0.2.2-rc.3**. Other versions and platforms ha
 
 ### Install from npm (recommended)
 
-The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch), currently **0.1.16**. Registry availability, package integrity, and installation in a clean directory have been verified.
+The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch). **0.1.16 has passed packaging and local installation checks, but npm publication is awaiting account two-factor authentication**; npm latest is currently 0.1.13.
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
@@ -81,7 +81,7 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 
 This migration applies only to this project's old installation; it is not a recommendation to remove another author's similarly named plugin. The appearance storage key is unchanged, so existing preferences are preserved on the same host page origin.
 
-Search and appearance screenshots were originally captured with the 0.1.12 demo components. Manual-unread screenshots use the actual 0.1.16 plugin components in an isolated mock host. Version 0.1.16 also includes confirmed archive restoration and the hover-scrolling fix.
+Search and appearance screenshots were originally captured with the 0.1.12 demo components. The manual-unread settings screenshot uses the actual 0.1.16 plugin component in an isolated mock host; the menu scene is a fictional illustration. Version 0.1.16 also includes confirmed archive restoration and the hover-scrolling fix.
 
 ### Discover it in the DSH plugin marketplace
 

@@ -14,7 +14,7 @@
 
 ## 功能预览
 
-以下图片使用**真实插件组件 + 隔离模拟宿主 + 虚构演示数据**生成，并非你的聊天记录或 DSH 原生页面截图。原生消息跳转需在真实宿主中验证，演示页不模拟“定位成功”。
+除特别标注的侧边栏重绘示意外，以下图片使用**真实插件组件 + 隔离模拟宿主 + 虚构演示数据**生成；均非你的聊天记录或 DSH 原生页面截图。原生消息跳转需在真实宿主中验证，演示页不模拟“定位成功”。
 
 ### 全文搜索、命中摘要与准确时间
 
@@ -38,11 +38,11 @@
 
 ### 扩展小功能：手动未读
 
-在设置中开启后，通过侧栏右键菜单标记未读 / 已读；再次进入会话自动清除。标记和开关仅保存在本机。下图的侧栏、菜单框架和状态点为模拟宿主，开关与未读菜单逻辑来自真实插件。
+在设置中开启后，通过侧栏右键菜单标记未读 / 已读；再次进入会话自动清除。标记和开关仅保存在本机。设置图来自真实插件组件；右键菜单图使用高还原侧边栏重绘，嵌入统一功能卡片。重绘图不是原生截图或运行验证证据。
 
 ![设置中开启会话未读标记](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/07-unread-settings.png)
 
-![右键菜单标记未读与左侧状态点示意](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/08-unread-menu.png)
+![右键菜单标记未读与左侧状态点示意](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16-docs.1/docs/images/08-unread-menu.png)
 
 ## 安装
 
@@ -50,7 +50,7 @@
 
 ### 从 npm 安装（推荐）
 
-已公开发布 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)，当前版本 **0.1.16**。已验证 npm registry 查询、发布校验值及全新目录安装。
+公开包名为 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)。**0.1.16 已完成打包和本地安装验证，npm 发布尚待账号双重验证**；当前 npm latest 为 0.1.13。
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
@@ -81,7 +81,7 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 
 这是替换本项目旧安装条目，不是建议卸载其他作者的同名插件。外观存储键保持不变；同一宿主页面来源下已有偏好会继续使用。
 
-全文搜索及外观截图最初来自 0.1.12 演示组件；手动未读截图由 0.1.16 的真实插件组件在隔离模拟宿主中生成。0.1.16 同时包含归档恢复确认与鼠标悬浮滚动修复。
+全文搜索及外观截图最初来自 0.1.12 演示组件；手动未读设置图由 0.1.16 的真实插件组件在隔离模拟宿主中生成；菜单场景图为虚构内容重绘。0.1.16 同时包含归档恢复确认与鼠标悬浮滚动修复。
 
 ### 在 DSH 插件市场中发现
 

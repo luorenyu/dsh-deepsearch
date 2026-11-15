@@ -252,6 +252,8 @@
     },
     {
       "file": "08-unread-menu.png",
+      "behavioralEvidenceImage": "component-unread-evidence.png",
+      "presentation": "Approved fictional sidebar illustration inside matching feature card, not runtime evidence",
       "title": "右键标记未读 · 左侧 StateDot 原生样式示意（模拟宿主，非宿主截图）",
       "appearance": null,
       "savedAppearance": {
