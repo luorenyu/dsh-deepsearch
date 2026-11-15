@@ -1,0 +1,5 @@
+# Settings density and recent metadata
+
+Approved 2026-11-16: preserve existing material and visual language. Replace the appearance reset text button with an accessible reset-arrow icon immediately after blur in a single appearance-controls row; title and aria-label 恢复默认. Compact CmdK explanation to 替代原生搜索，关闭恢复原绑定；⌘⇧K 仍可用。; retain official configuration and uninstall warning in tooltip/accessible description. Include archived defaults to true while manual opt-out still works. Recent conversations show project name and last-updated timestamp in local time YYYY/MM/DD HH:mm, not generic 会话标题. Do not turn recent list into archived-only list. Preserve search hit message time semantics. Narrow layouts may scroll the appearance controls instead of breaking the reset onto a separate line.
+
+Implementation: inspect catalog fields and enrich recent rows client-side if sufficient; tests for true default, opt-out, metadata mapping, invalid/missing time, reset and compact help accessibility. Run full regressions, syntax/demo checks and inspect existing desktop after updating installed artifacts. No release/version bump.
