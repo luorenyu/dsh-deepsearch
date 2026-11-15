@@ -143,6 +143,64 @@ window.__ModuleLoader__.load({
       }
       return style;
     }
+    // Independent, local-only reminders: never mutate the host's completionUnread status.
+    const UNREAD_KEY = 'dsh-deepsearch.manual-unread.v1';
+    function unreadPrefs(value) {
+      return {enabled: value?.enabled === true, ids: [...new Set(Array.isArray(value?.ids)
+        ? value.ids.filter(id => typeof id === 'string' && id.length > 0 && id.length <= 512).slice(0, 10000) : [])]};
+    }
+    function createUnreadStore(storage) {
+      let state;
+      try {const raw = storage?.getItem(UNREAD_KEY); state = unreadPrefs(raw?.length > 6e6 ? null : JSON.parse(raw));}
+      catch {state = unreadPrefs(null);}
+      let active = new Set(), error = '';
+      const listeners = new Set();
+      const notify = () => {for (const listener of listeners) listener();};
+      const commit = next => {
+        state = unreadPrefs(next);
+        try {storage?.setItem(UNREAD_KEY, JSON.stringify(state)); if (!storage) throw new Error(); error = '';}
+        catch {error = '本次已生效，但无法保存到本机；刷新或重启后可能丢失。';}
+        notify();
+      };
+      return {
+        getSnapshot: () => state,
+        subscribe: listener => {listeners.add(listener); return () => listeners.delete(listener);},
+        getError: () => error,
+        setEnabled: enabled => commit({...state, enabled}),
+        mark: (id, unread) => {
+          if (!state.enabled || typeof id !== 'string' || !id || id.length > 512) return;
+          commit({...state, ids: unread ? state.ids.concat(id) : state.ids.filter(item => item !== id)});
+        },
+        observeActive: ids => {
+          const next = new Set(ids), entered = [...next].filter(id => !active.has(id)); active = next;
+          if (state.enabled && entered.some(id => state.ids.includes(id))) commit({...state, ids: state.ids.filter(id => !entered.includes(id))});
+        },
+        primeActive: ids => {active = new Set(ids);},
+        reload: () => {
+          try {const raw = storage?.getItem(UNREAD_KEY); state = unreadPrefs(raw?.length > 6e6 ? null : JSON.parse(raw)); error = ''; notify();} catch {}
+        },
+      };
+    }
+    function installUnread(ctx, store) {
+      const activeIds = () => Object.values(ctx.sessions.list.getSnapshot()?.byId || {})
+        .filter(row => (row.retainedBy?.mainView ?? 0) > 0).map(row => row.id);
+      store.primeActive(activeIds());
+      const stopSessions = ctx.sessions.list.subscribe(() => store.observeActive(activeIds()));
+      const unmenu = ctx.contextMenus.register({id: 'deepsearch.manual-unread', target: 'session', order: 350,
+        observe: () => [store],
+        resolve: ({sessionId}) => {
+          const state = store.getSnapshot(); if (!state.enabled) return [];
+          const unread = state.ids.includes(sessionId);
+          return [{id: 'deepsearch-toggle-unread', label: unread ? '标记为已读' : '标记为未读',
+            run: () => store.mark(sessionId, !unread)}];
+        }});
+      const onStorage = event => {if (event.key === UNREAD_KEY || event.key === null) store.reload();};
+      window.addEventListener('storage', onStorage);
+      return () => {
+        stopSessions(); unmenu();
+        window.removeEventListener('storage', onStorage);
+      };
+    }
     function Icon({folder = false}) {
       return h('svg', {width: 19, height: 19, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, 'aria-hidden': true},
         folder ? h('path', {d: 'M3 6h6l2 3h10v11H3z'}) : h(React.Fragment, null, h('circle', {cx: 10.5, cy: 10.5, r: 6.7}), h('path', {d: 'm16 16 5 5'})));
@@ -155,9 +213,23 @@ window.__ModuleLoader__.load({
     const css = "\n.deepsearch-panel{--ds-bg:var(--we-panel-color,var(--dsw-alias-bg-base,#fff));--ds-line:var(--dsw-alias-border-l1,#e5e7eb);--ds-text:var(--dsw-alias-label-primary,#18212f);--ds-muted:var(--dsw-alias-label-secondary,#657080);--ds-hover:var(--dsw-alias-bg-layer-2,#f3f5f7);position:fixed;pointer-events:auto;z-index:10000;top:clamp(26px,12vh,128px);left:50%;transform:translateX(-50%);width:min(700px,calc(100vw - 32px));max-height:calc(100vh - clamp(26px,12vh,128px) - 24px);display:flex;flex-direction:column;color:var(--ds-text);background:var(--ds-bg);background:var(--ds-effective-surface,var(--ds-surface,var(--ds-bg)));backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none));-webkit-backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none));border:1px solid var(--ds-line);border-radius:16px;box-shadow:0 16px 60px #0002,0 2px 8px #0001;font-family:inherit;overflow:hidden;text-align:left;isolation:isolate}\n.deepsearch-panel *{box-sizing:border-box}.deepsearch-panel button,.deepsearch-panel input,.deepsearch-panel select,.deepsearch-jump button{font:inherit;color:inherit}.deepsearch-panel button{cursor:pointer}.deepsearch-panel button:disabled{cursor:default;opacity:.6}.deepsearch-panel button:focus-visible,.deepsearch-panel select:focus-visible,.deepsearch-jump button:focus-visible{outline:2px solid var(--dsw-alias-brand-primary,#3478f6);outline-offset:-2px}.deepsearch-search{display:flex;align-items:center;gap:14px;padding:19px 20px 17px;color:var(--ds-muted)}.deepsearch-search>input{min-width:0;flex:1;border:0;outline:none;background:transparent;font-size:18px;line-height:28px;color:var(--ds-text)}.deepsearch-search>input::placeholder{color:var(--ds-muted);opacity:.8}.deepsearch-escape{border:1px solid var(--ds-line);border-radius:5px;padding:2px 6px;background:none;font-size:11px!important;color:var(--ds-muted)!important}.deepsearch-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px 11px;border-bottom:1px solid var(--ds-line)}.deepsearch-tabs{display:flex;gap:4px}.deepsearch-tabs button{border:0;border-radius:6px;background:none;font-size:12px;padding:6px 12px;color:var(--ds-muted)}.deepsearch-tabs button[aria-selected=true]{background:var(--ds-hover);color:var(--ds-text);font-weight:600}.deepsearch-toolbar select{max-width:190px;min-width:0;border:0;outline:none;background:var(--ds-bg);font-size:11px;color:var(--ds-muted);padding:5px}.deepsearch-caption{display:flex;justify-content:space-between;gap:12px;padding:13px 20px 7px;font-size:11px;color:var(--ds-muted)}.deepsearch-caption label{display:flex;align-items:center;gap:4px;cursor:pointer}.deepsearch-caption input{margin:0;width:12px;height:12px;accent-color:var(--dsw-alias-brand-primary,#3478f6)}.deepsearch-results{overflow-y:auto;overscroll-behavior:contain;max-height:min(440px,50vh);padding:0 8px 8px;scroll-padding:8px;min-height:80px}.deepsearch-result{display:flex;width:100%;gap:12px;align-items:flex-start;border:0;border-radius:8px;background:transparent;padding:12px;text-align:left}.deepsearch-result[aria-selected=true]{background:var(--ds-hover)}.deepsearch-result-icon{color:var(--ds-muted);padding-top:2px;flex:none}.deepsearch-result-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}.deepsearch-result-title{font-size:13px;line-height:20px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.deepsearch-snippet{font-size:12px;line-height:1.7;color:var(--ds-muted);white-space:pre-wrap;overflow-wrap:anywhere;display:block}.deepsearch-snippet mark{background:#ffe293;color:#382a09;border-radius:2px;padding:0 1px}.deepsearch-meta{font-size:10px;line-height:17px;color:var(--ds-muted);opacity:.85}.deepsearch-return{font-size:14px;align-self:center;color:var(--ds-muted);opacity:0}.deepsearch-result[aria-selected=true] .deepsearch-return{opacity:1}.deepsearch-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--ds-line);padding:12px 20px;color:var(--ds-muted);font-size:10px}.deepsearch-footer strong{font-weight:600;color:var(--ds-text)}.deepsearch-empty{display:flex;align-items:center;flex-direction:column;gap:12px;padding:37px 18px 32px;color:var(--ds-muted)}.deepsearch-empty>svg{width:27px;height:27px;opacity:.5}.deepsearch-empty strong{font-size:13px;font-weight:500;color:var(--ds-text)}.deepsearch-empty p{font-size:11px;margin:0;text-align:center}.deepsearch-error,.deepsearch-warning{padding:8px 20px;font-size:11px;color:var(--ds-text);background:var(--ds-hover)}.deepsearch-error button{margin-left:8px;border:0;background:none;text-decoration:underline}.deepsearch-more{background:transparent;border:0;border-top:1px solid var(--ds-line);padding:10px;font-size:11px;color:var(--ds-muted)}.deepsearch-jump{display:flex;flex-direction:column;flex:1;min-height:0;height:100%;position:relative}.deepsearch-jump-bar{display:flex;align-items:center;gap:12px;padding:9px 18px;flex-shrink:0;border-bottom:1px solid var(--dsw-alias-border-l1,#ddd);font-size:11px;color:var(--dsw-alias-label-secondary,#667);background:var(--dsw-alias-bg-base,#fff)}.deepsearch-jump-bar>span{flex:1}.deepsearch-jump button,.deepsearch-jump-loading button{border:1px solid var(--dsw-alias-border-l1,#ddd);border-radius:5px;background:var(--dsw-alias-bg-base,#fff);font:inherit;color:inherit;padding:3px 7px;cursor:pointer}.deepsearch-jump-loading{padding:24px;font:inherit;color:var(--dsw-alias-label-primary,#18212f)}.deepsearch-jump *::highlight(deepsearch-hit){background:#ffe293;color:#382a09}\n@media(max-width:520px){.deepsearch-panel{top:18px;width:calc(100vw - 20px);border-radius:12px}.deepsearch-search{padding:14px;gap:10px}.deepsearch-search>input{font-size:16px}.deepsearch-toolbar{padding:0 10px 10px}.deepsearch-toolbar select{max-width:130px}.deepsearch-caption{padding-left:14px;padding-right:14px}.deepsearch-footer{padding:11px 14px}.deepsearch-key-hint{display:none}.deepsearch-jump-bar{flex-wrap:wrap}}\n";
     const archiveCss = '.deepsearch-archived{display:inline-block;margin-left:8px;padding:1px 5px;border:1px solid var(--ds-line);border-radius:4px;font-size:11px;font-weight:400;color:var(--ds-muted);vertical-align:middle}.deepsearch-confirm{padding:14px 20px;border-top:1px solid var(--ds-line);font-size:13px}.deepsearch-confirm p{margin:6px 0 10px;color:var(--ds-muted)}.deepsearch-confirm button{padding:6px 10px;margin-right:8px;border:1px solid var(--ds-line);border-radius:6px;background:var(--ds-hover)}';
     const appearanceCss = '.deepsearch-appearance{display:flex;flex-wrap:wrap;gap:12px;padding:12px 20px 16px;border-top:1px solid var(--ds-line);font-size:12px}.deepsearch-appearance label{display:flex;align-items:center;gap:8px}.deepsearch-appearance select,.deepsearch-appearance button{background:var(--ds-hover);border:1px solid var(--ds-line);border-radius:6px;padding:5px}.deepsearch-appearance input[type=range]{width:100px;accent-color:var(--dsw-alias-brand-primary,#3478f6)}.deepsearch-appearance input[type=color]{width:30px;height:24px;padding:0;border:0;background:none}.deepsearch-appearance p{width:100%;margin:0;color:var(--ds-muted)}/* Wallpaper Engine intentionally solidifies ordinary ARIA dialogs. Only this owned panel opts back into its selected material; never forge its runtime markers or change global settings. */body[data-we-glass-page][data-we-floater-solid] .deepsearch-panel[role=dialog][data-appearance]{background-color:var(--ds-effective-surface,var(--ds-surface,var(--ds-bg)))!important;backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none))!important;-webkit-backdrop-filter:var(--ds-effective-filter,var(--ds-filter,none))!important}@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.deepsearch-panel{--ds-effective-surface:var(--ds-bg);--ds-effective-filter:none}}@media(prefers-reduced-transparency:reduce){.deepsearch-panel{--ds-effective-surface:var(--ds-bg);--ds-effective-filter:none}}';
+    const extensionCss = '.deepsearch-extension{width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:14px;border-top:1px solid var(--ds-line)}.deepsearch-extension strong{font-weight:600;font-size:13px}.deepsearch-extension p{margin:5px 0 0;line-height:1.6}.deepsearch-panel .deepsearch-switch{flex-shrink:0;width:38px;height:22px;padding:2px;border:1px solid var(--ds-line);border-radius:20px;background:var(--ds-hover)}.deepsearch-panel .deepsearch-switch[aria-checked=true]{background:#3478f6;border-color:transparent}.deepsearch-switch span{display:block;width:16px;height:16px;border-radius:50%;background:var(--ds-muted)}.deepsearch-switch[aria-checked=true] span{transform:translateX(16px);background:#fff}';
     return {
-      inject: ['slots', 'layout', 'uiWorkspace', 'uiSession', 'sessions', 'workspaces'],
+      inject: ['slots', 'layout', 'uiWorkspace', 'uiSession', 'sessions', 'workspaces', 'contextMenus'],
       apply(ctx) {
+        let storage; try {storage = window.localStorage;} catch {}
+        const unreadStore = createUnreadStore(storage);
+        ctx.effect(() => installUnread(ctx, unreadStore));
+        function ManualUnreadDot({sessionId, useManualUnread}) {
+          const unread = useManualUnread(state => state.enabled && state.ids.includes(sessionId));
+          return unread ? h('span', {'aria-label': '手动未读', title: 'DeepSearch 手动未读',
+            style: {display: 'inline-block', width: 7, height: 7, borderRadius: '50%', flex: 'none',
+              background: '#3478f6'}}) : null;
+        }
+        ctx.slots.inject('sidebar.session.row.trailing', () => ctx.slots.register({
+          name: 'sidebar.session.row.trailing', id: 'deepsearch-manual-unread', order: 50,
+          inject: () => ({hooks: {manualUnread: unreadStore}}),
+        }, ManualUnreadDot));
         let opened = false, intent = null, releaseShell, previousFocus, preferredSessionId, selectionEpoch = 0, disposed = false;
         const listeners = new Set(), recoveries = new Map();
         const notify = () => { for (const listener of listeners) listener(); };
@@ -310,6 +382,7 @@ window.__ModuleLoader__.load({
         }
         function Overlay() {
           const visible = React.useSyncExternalStore(subscribe, () => opened);
+          const unread = React.useSyncExternalStore(unreadStore.subscribe, unreadStore.getSnapshot);
           const [query, setQuery] = React.useState(''), [tab, setTab] = React.useState('all');
           const [workspace, setWorkspace] = React.useState(''), [archived, setArchived] = React.useState(false);
           const [catalog, setCatalog] = React.useState({sessions: [], workspaces: []}), [catalogError, setCatalogError] = React.useState('');
@@ -439,19 +512,23 @@ window.__ModuleLoader__.load({
             }
           }
           return h('section', {className: 'deepsearch-panel', style: appearanceStyle(appearance), 'data-appearance': appearance.mode, role: 'dialog', 'aria-label': 'DeepSearch 全文搜索', 'aria-modal': false, ref: panel, onKeyDown: onKey},
-            h('style', null, css + appearanceCss + archiveCss),
+            h('style', null, css + appearanceCss + archiveCss + extensionCss),
             h('header', {className: 'deepsearch-search'}, h(Icon),
               h('input', {ref: input, value: query, maxLength: 256, placeholder: '搜索对话里的任何一句话…', 'aria-label': '搜索会话正文', role: 'combobox', 'aria-expanded': true, 'aria-controls': 'deepsearch-results', 'aria-activedescendant': items[index] ? 'deepsearch-result-' + index : undefined, autoComplete: 'off', spellCheck: false, onChange: event => {cancelSelection(); setQuery(event.target.value);}, onCompositionStart: () => {cancelSelection(); setComposing(true);}, onCompositionEnd: () => setComposing(false)}),
-              h('button', {className: 'deepsearch-escape', 'aria-expanded': settings, 'aria-controls': 'deepsearch-appearance', onClick: () => setSettings(value => !value)}, '外观'),
+              h('button', {className: 'deepsearch-escape', 'aria-expanded': settings, 'aria-controls': 'deepsearch-appearance', onClick: () => setSettings(value => !value)}, '设置'),
               h('button', {className: 'deepsearch-escape', onClick: () => setOpen(false), 'aria-label': '关闭 DeepSearch'}, 'esc')),
-            settings && h('div', {className: 'deepsearch-appearance', id: 'deepsearch-appearance', role: 'group', 'aria-label': '面板外观'},
+            settings && h('div', {className: 'deepsearch-appearance', id: 'deepsearch-appearance', role: 'group', 'aria-label': 'DeepSearch 设置'},
               h('label', null, '背景模式', h('select', {value: appearance.mode, onChange: e => updateAppearance({...appearance, mode:e.target.value})},
                 ...[['glass','毛玻璃'],['theme','跟随 DSH'],['custom','自定义']].map(([value,label]) => h('option',{key:value,value},label)))),
               appearance.mode === 'custom' && h('label', null, '底色', h('input', {type:'color', value:appearance.color, onChange:e=>updateAppearance({...appearance,color:e.target.value})})),
               appearance.mode === 'custom' && h('label', null, '不透明度 ' + appearance.opacity + '%', h('input', {type:'range', min:55, max:100, value:appearance.opacity, onChange:e=>updateAppearance({...appearance,opacity:Number(e.target.value)})})),
               appearance.mode !== 'theme' && h('label', null, '模糊 ' + appearance.blur + 'px', h('input', {type:'range', min:0, max:32, value:appearance.blur, onChange:e=>updateAppearance({...appearance,blur:Number(e.target.value)})})),
               h('button', {onClick:()=>updateAppearance(null)}, '恢复默认'),
-              appearanceError && h('p', {role:'status'}, appearanceError)),
+              appearanceError && h('p', {role:'status'}, appearanceError),
+              h('div', {className: 'deepsearch-extension'},
+                h('div', null, h('strong', {id: 'deepsearch-unread-label'}, '会话未读标记'), h('p', {id: 'deepsearch-unread-help'}, '扩展小功能 · 右键标记未读，再次打开自动已读。仅存本机；关闭保留标记。')),
+                h('button', {type: 'button', role: 'switch', className: 'deepsearch-switch', 'aria-checked': unread.enabled, 'aria-labelledby': 'deepsearch-unread-label', 'aria-describedby': 'deepsearch-unread-help', onClick: () => unreadStore.setEnabled(!unread.enabled)}, h('span', {'aria-hidden': true}))),
+              unreadStore.getError() && h('p', {role: 'status'}, unreadStore.getError())),
             h('div', {className: 'deepsearch-toolbar'}, h('div', {className: 'deepsearch-tabs', role: 'tablist', 'aria-label': '结果类型'},
               ...[['all', '全部'], ['conversations', '对话'], ['projects', '项目']].map(([value, label]) => h('button', {key: value, role: 'tab', 'aria-selected': tab === value, onClick: () => {cancelSelection(); setTab(value);}}, label))),
               h('select', {'aria-label': '工作区范围', value: workspace, onChange: event => {cancelSelection(); setWorkspace(event.target.value);}}, h('option', {value: ''}, '所有工作区'), ...(catalog.workspaces || []).map(project => h('option', {key: project.id, value: project.id}, project.title)))),
@@ -475,7 +552,7 @@ window.__ModuleLoader__.load({
             (error || catalogError) && h('div', {className: 'deepsearch-error', role: 'alert'}, error || '目录读取失败：' + catalogError, h('button', {onClick: () => error && displayResult.cursor ? more() : setRetry(value => value + 1)}, '重试')),
             displayResult.warnings?.length > 0 && h('div', {className: 'deepsearch-warning', role: 'status'}, '部分历史读取失败（' + displayResult.warnings.length + '）；当前结果可能不完整。'),
             tab !== 'projects' && displayResult.cursor && h('button', {className: 'deepsearch-more', onClick: more, disabled: busy || result.items.length >= MAX_RESULTS}, result.items.length >= MAX_RESULTS ? '已显示 200 条，请缩小搜索范围' : busy ? '正在继续扫描…' : '继续搜索剩余历史'),
-            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.14 / 本地全文'),
+            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.15 / 本地全文'),
               h('span', {role: 'status'}, status.footer),
               h('span', {className: 'deepsearch-key-hint'}, '↑↓ 选择  ↵ 打开')));
         }

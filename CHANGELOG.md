@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.15
+
+- Preserve the concurrently added, opt-in local manual-unread menu, blue dot and settings alongside the archive-navigation fix.
+- Keep the scoped package identity and local preference keys unchanged.
+
 ## 0.1.14
 
 - Mark archived title and message hits with an explicit “已归档” badge.

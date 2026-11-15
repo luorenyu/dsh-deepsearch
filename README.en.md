@@ -89,7 +89,7 @@ Once accepted, search the relevant marketplace for **DeepSearch** or **会话全
 | Open a result | `Enter` |
 | Close the panel | `Esc` or click outside |
 | Set the search scope | All / Conversations / Projects, workspace dropdown, include archived |
-| Adjust the panel | “外观” (Appearance) in the upper-right corner |
+| Adjust the panel and extensions | “设置” (Settings) in the upper-right corner |
 
 DeepSearch does not take over DSH's native `⌘K` shortcut or the `⌘F` shortcut commonly used by other search plugins.
 
@@ -110,6 +110,12 @@ Failures or timeouts keep results visible with an error. DeepSearch does not sil
 - **Custom**: choose a color, opacity from 55–100%, and blur from 0–32px, or restore the defaults.
 
 DeepSearch does not dim the screen or blur the entire DSH page. Its compatibility fix for wallpaper plugins' opaque-dialog rules applies only to its own panel. Preferences are saved locally in `localStorage`; if storage is blocked, settings remain usable for the current session. An opaque fallback is used when reduced transparency is requested or backdrop blur is unsupported.
+
+## Optional extension: manual unread markers
+
+Enable “会话未读标记” in Settings (off by default). Right-click a sidebar conversation to mark it unread/read; unread conversations show a blue dot. Entering a conversation clears its manual marker. Marking the already-open conversation does not immediately clear it.
+
+Preferences and markers stay in this client’s local storage, do not sync across devices and do not change native completion notifications. Disabling the extension hides menus and dots but keeps markers. Host trailing-slot rules may temporarily hide dots while hovering, focusing or opening a menu. Storage failures are reported in Settings; changes remain usable for the current session.
 
 ## Privacy and Limitations
 

@@ -30,6 +30,7 @@ function harness({rows = [{id:'hit', sessionId:'target', title:'Archived title',
   };
   let pending = [];
   const ctx = {
+    contextMenus: {register: () => () => {}},
     workspaces: missingStore ? undefined : {list:workspaces},
     uiWorkspace: {openSession(id) {calls.push(['open', id]); binding.set({key:id});},
       unarchiveSession: missingAPI ? undefined : id => {calls.push(['unarchive', id]); return recovery ? recovery(id, workspaces) : Promise.resolve().then(() => workspaces.set({phase:'ready', state:'idle', archivedSessionIds:[]}));}},
