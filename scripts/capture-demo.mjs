@@ -33,10 +33,12 @@ async function settle(count){
 async function shot(file,title){
  await caption(title);
  await browser('screenshot',path.join(output,file));
- let state=JSON.parse(await evaluate('JSON.stringify({appearance:document.querySelector(".deepsearch-panel").dataset.appearance,savedAppearance:JSON.parse(localStorage.getItem("dsh-deepsearch.appearance.v1")),workspace:document.querySelector("[aria-label=工作区范围]").value,archived:document.querySelector("input[type=checkbox]").checked,resultCount:document.querySelectorAll(".deepsearch-result").length,marks:[...document.querySelectorAll("mark")].map(n=>n.textContent),footer:document.querySelector(".deepsearch-footer").textContent,nativeNavigationAttempted:window.__DEEPSEARCH_DEMO__.nativeNavigationAttempted})'));
+ let state=JSON.parse(await evaluate('JSON.stringify({appearance:document.querySelector(".deepsearch-panel")?.dataset.appearance ?? null,savedAppearance:JSON.parse(localStorage.getItem("dsh-deepsearch.appearance.v1")),workspace:document.querySelector("[aria-label=工作区范围]")?.value ?? null,archived:document.querySelector("input[type=checkbox]")?.checked ?? null,resultCount:document.querySelectorAll(".deepsearch-result").length,marks:[...document.querySelectorAll("mark")].map(n=>n.textContent),footer:document.querySelector(".deepsearch-footer")?.textContent ?? null,nativeNavigationAttempted:window.__DEEPSEARCH_DEMO__.nativeNavigationAttempted,unread:JSON.parse(localStorage.getItem("dsh-deepsearch.manual-unread.v1")),unreadSwitch:document.querySelector("[role=switch]")?.getAttribute("aria-checked") ?? null,leadingDots:[...document.querySelectorAll(".demo-session-row [aria-label=手动未读]")].map(n=>({sessionId:n.closest(".demo-session-row").dataset.sessionId,primitive:n.querySelector("[data-mock-primitive]")?.dataset.mockPrimitive,state:n.querySelector("[data-state]")?.dataset.state})),menuItems:[...document.querySelectorAll("[role=menuitem]")].map(n=>n.textContent),registeredSlots:window.__DEEPSEARCH_DEMO__.registeredSlots,registeredMenus:window.__DEEPSEARCH_DEMO__.registeredMenus})'));
  if(typeof state==='string')state=JSON.parse(state);
  if(state.nativeNavigationAttempted)throw new Error('Native navigation unexpectedly attempted');
  if(state.marks.some(mark=>mark!=='验收记录'))throw new Error('Unexpected highlight text');
+ if(file==='07-unread-settings.png' && (state.unreadSwitch!=='true'||!state.unread?.enabled))throw new Error('Unread settings not enabled');
+ if(file==='08-unread-menu.png' && (state.leadingDots.length!==1||state.leadingDots[0].sessionId!=='demo-s1'||state.leadingDots[0].primitive!=='StateDot'||state.leadingDots[0].state!=='done'||state.menuItems[0]!=='标记为未读'))throw new Error('Unread menu/leading-slot evidence mismatch');
  records.push({file,title,...state});console.log('Captured '+file);
 }
 try {
@@ -66,7 +68,7 @@ try {
  await shot('03-archived.png','勾选「含归档」· 找回旧方案的历史记录');
  await browser('uncheck','input[type=checkbox]');
  await settle(4);
- await browser('find','role','button','click','--name','外观','--exact');
+ await browser('find','role','button','click','--name','设置','--exact');
  await browser('select','.deepsearch-appearance select','glass');
  await shot('04-glass.png','外观 · 毛玻璃面板（背景与主题令牌由 mock 提供）');
  await browser('select','.deepsearch-appearance select','theme');
@@ -78,6 +80,31 @@ try {
  await browser('focus','input[type=range][min="55"]');
  await browser('press','ArrowLeft');await browser('press','ArrowLeft');await browser('press','ArrowLeft');
  await shot('06-custom.png','外观 · 自定义底色、不透明度与模糊');
+ // Exercise the real switch and plugin context-menu/leading-slot components.
+ if(records.find(record=>record.file==='04-glass.png').unreadSwitch!=='false')throw new Error('Unread must default to disabled');
+ await evaluate('document.body.dataset.theme="light"');
+ await browser('find','role','button','click','--name','恢复默认','--exact');
+ await browser('find','role','switch','click','--name','会话未读标记','--exact');
+ await browser('wait','--fn','document.querySelector("[role=switch]").getAttribute("aria-checked")==="true"');
+ await shot('07-unread-settings.png','设置 · 会话未读标记（默认关闭，可按需开启）');
+ await browser('find','role','button','click','--name','关闭 DeepSearch','--exact');
+ await evaluate('document.body.dataset.scene="unread"');
+ const contextMenu=id=>evaluate('document.querySelector('+JSON.stringify('[data-session-id="'+id+'"]')+').dispatchEvent(new MouseEvent("contextmenu",{bubbles:true,cancelable:true}))');
+ await contextMenu('demo-s1');
+ await browser('find','role','menuitem','click','--name','标记为未读','--exact');
+ await browser('wait','--fn','document.querySelectorAll(".demo-session-row [aria-label=手动未读]").length===1');
+ await contextMenu('demo-s2');
+ await shot('08-unread-menu.png','右键标记未读 · 左侧 StateDot 原生样式示意（模拟宿主，非宿主截图）');
+ // Clear via the plugin's reverse action, then verify mainView re-entry auto-read.
+ await evaluate('window.__DEEPSEARCH_DEMO__.closeMenu()');
+ await contextMenu('demo-s1');
+ await browser('find','role','menuitem','click','--name','标记为已读','--exact');
+ await browser('wait','--fn','document.querySelectorAll(".demo-session-row [aria-label=手动未读]").length===0');
+ await contextMenu('demo-s1');
+ await browser('find','role','menuitem','click','--name','标记为未读','--exact');
+ await browser('find','role','button','click','--name','搜索面板：中文检索体验','--exact');
+ await browser('wait','--fn','JSON.parse(localStorage.getItem("dsh-deepsearch.manual-unread.v1")).ids.length===0 && document.querySelectorAll(".demo-session-row [aria-label=手动未读]").length===0');
+ const unreadChecks={defaultDisabled:true,markUnread:true,markRead:true,autoReadOnMockMainViewReentry:true};
  await writeFile(path.join(output,'screenshots.json'),JSON.stringify(records.map(record=>'docs/images/'+record.file),null,2)+'\n');
  const errors=await browser('errors');
  if(errors && !errors.includes('No errors'))throw new Error('Browser errors: '+errors);
@@ -87,8 +114,9 @@ try {
   source:'client.js (served byte-for-byte, never rewritten)',sourceSha256:createHash('sha256').update(source).digest('hex'),version:manifest.version,
   renderer:'React 18.3.1 / ReactDOM 18.3.1',browser:'agent-browser isolated fresh session',viewport:{width:1180,height:960},
   privacy:'No real host, accounts, private sessions, CDP, user browser profile, or user data directories accessed. Native navigation blocked.',
-  real:['Overlay React component','Mark excerpt highlighting','keyboard shortcut','project selection','workspace filter','archive checkbox','appearance controls','client CSS'],
-  mocked:['module loader and injected host context','catalog/search API responses','invented Chinese content and timestamps','background and host theme CSS tokens'],
+  real:['Overlay React component','Mark excerpt highlighting','keyboard shortcut','project selection','workspace filter','archive checkbox','appearance controls','unread settings switch','unread store','context-menu resolver and actions','ManualUnreadDot leading-slot component','client CSS'],
+  mocked:['module loader and injected host context','catalog/search API responses','invented Chinese content and timestamps','background and host theme CSS tokens','sidebar rows and context-menu frame','StateDot primitive visual (not the native host implementation)','mainView retention transitions for fictional sessions'],
+  unreadChecks,
   screenshots:records,requests:demo.requests,
  },null,2)+'\n');
 } finally {

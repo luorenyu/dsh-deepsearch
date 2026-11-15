@@ -1,6 +1,6 @@
 {
   "name": "@renyuluo/dsh-deepsearch",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Local-first conversation full-text search for DeepSeek Harness, with Chinese substring matching and native message navigation.",
   "type": "module",
   "publishConfig": {"access": "public", "registry": "https://registry.npmjs.org/"},
@@ -31,7 +31,7 @@
     "dsh": "0.2.2-rc.3"
   },
   "exports": {
-    ".": "./runtime-0.1.15.js",
+    ".": "./runtime-0.1.16.js",
     "./client": "./client.js",
     "./package.json": "./package.json",
     "./locale/en.json": "./locale/en.json",
@@ -40,7 +40,7 @@
   },
   "icon": "./icon.svg",
   "files": [
-    "runtime-0.1.15.js",
+    "runtime-0.1.16.js",
     "host.js",
     "search-core.js",
     "client.js",
@@ -48,6 +48,8 @@
     "locale",
     "icon.svg",
     "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "dsh": {
@@ -66,6 +68,6 @@
   },
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "check": "node --check client.js && node --check host.js && node --check search-core.js && node --check runtime-0.1.15.js"
+    "check": "node --check client.js && node --check host.js && node --check search-core.js && node --check runtime-0.1.16.js"
   }
 }

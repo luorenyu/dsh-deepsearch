@@ -2,6 +2,7 @@ window.__ModuleLoader__.load({
   id: '@renyuluo/dsh-deepsearch',
   factory(require) {
     const React = require('react'), h = React.createElement;
+    const {StateDot} = require('@deepseek-ai/dsh-client-ui-primitives');
     const MAX_RESULTS = 200;
     function selectedKeys(chat, seq) {
       if (!Number.isSafeInteger(seq) || !chat?.order || !chat.nodes?.get) return [];
@@ -222,12 +223,12 @@ window.__ModuleLoader__.load({
         ctx.effect(() => installUnread(ctx, unreadStore));
         function ManualUnreadDot({sessionId, useManualUnread}) {
           const unread = useManualUnread(state => state.enabled && state.ids.includes(sessionId));
+          // The host owns placement and status priority; reuse its exact unread visual.
           return unread ? h('span', {'aria-label': '手动未读', title: 'DeepSearch 手动未读',
-            style: {display: 'inline-block', width: 7, height: 7, borderRadius: '50%', flex: 'none',
-              background: '#3478f6'}}) : null;
+            style: {display: 'inline-flex'}}, h(StateDot, {state: 'done'})) : null;
         }
-        ctx.slots.inject('sidebar.session.row.trailing', () => ctx.slots.register({
-          name: 'sidebar.session.row.trailing', id: 'deepsearch-manual-unread', order: 50,
+        ctx.slots.inject('sidebar.session.row.leading', () => ctx.slots.register({
+          name: 'sidebar.session.row.leading', id: 'deepsearch-manual-unread', order: 50,
           inject: () => ({hooks: {manualUnread: unreadStore}}),
         }, ManualUnreadDot));
         let opened = false, intent = null, releaseShell, previousFocus, preferredSessionId, selectionEpoch = 0, disposed = false;
@@ -441,7 +442,6 @@ window.__ModuleLoader__.load({
           const visibleHits = result.renderOwner === renderKey ? result.items : [];
           const items = tab === 'projects' ? projects : request.query ? (tab === 'all' ? projects.slice(0, 3).concat(visibleHits) : visibleHits) : recent;
           React.useEffect(() => {setIndex(old => Math.min(old, Math.max(0, items.length - 1)));}, [items.length]);
-          React.useEffect(() => {list.current?.querySelector('[aria-selected="true"]')?.scrollIntoView({block: 'nearest'});}, [index]);
           function choose(item) {
             if (!item || !opened || disposed || activeRender.current !== renderKey) return;
             if (selection.current?.pending) return;
@@ -502,7 +502,13 @@ window.__ModuleLoader__.load({
           function onKey(event) {
             if (event.isComposing || event.nativeEvent?.isComposing || event.keyCode === 229 || composing) return;
             if (event.key === 'Escape') {event.preventDefault(); event.stopPropagation(); if (selection.current) cancelSelection(); else setOpen(false);}
-            if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && event.target === input.current) {event.preventDefault(); setIndex(old => items.length ? (old + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length : 0);}
+            if ((event.key === 'ArrowDown' || event.key === 'ArrowUp') && event.target === input.current) {
+              event.preventDefault();
+              const next = items.length ? (index + (event.key === 'ArrowDown' ? 1 : items.length - 1)) % items.length : 0;
+              setIndex(next);
+              // Hover changes highlight only; scrolling belongs exclusively to keyboard navigation.
+              if (items.length) list.current?.querySelector('#deepsearch-result-' + next)?.scrollIntoView({block: 'nearest', behavior: 'instant'});
+            }
             if (event.key === 'Enter' && event.target === input.current) {event.preventDefault(); if (!selection.current) choose(items[index]);}
             if (event.key === 'Tab') {
               const focusable = [...panel.current.querySelectorAll('button:not(:disabled),input,select,[tabindex="0"]')].filter(node => node.tabIndex >= 0 && !node.closest('[hidden],[inert]') && node.getClientRects().length > 0);
@@ -552,7 +558,7 @@ window.__ModuleLoader__.load({
             (error || catalogError) && h('div', {className: 'deepsearch-error', role: 'alert'}, error || '目录读取失败：' + catalogError, h('button', {onClick: () => error && displayResult.cursor ? more() : setRetry(value => value + 1)}, '重试')),
             displayResult.warnings?.length > 0 && h('div', {className: 'deepsearch-warning', role: 'status'}, '部分历史读取失败（' + displayResult.warnings.length + '）；当前结果可能不完整。'),
             tab !== 'projects' && displayResult.cursor && h('button', {className: 'deepsearch-more', onClick: more, disabled: busy || result.items.length >= MAX_RESULTS}, result.items.length >= MAX_RESULTS ? '已显示 200 条，请缩小搜索范围' : busy ? '正在继续扫描…' : '继续搜索剩余历史'),
-            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.15 / 本地全文'),
+            h('footer', {className: 'deepsearch-footer'}, h('span', null, h('strong', null, 'DeepSearch'), ' 0.1.16 / 本地全文'),
               h('span', {role: 'status'}, status.footer),
               h('span', {className: 'deepsearch-key-hint'}, '↑↓ 选择  ↵ 打开')));
         }

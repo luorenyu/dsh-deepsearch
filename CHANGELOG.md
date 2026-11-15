@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.16
+
+- Add public documentation images for the opt-in manual-unread settings, session context menu and left-side indicator, using fictional demo data.
+- Reuse the native DSH `StateDot` unread component in the leading sidebar slot; native running, interaction and completion states retain priority.
+- Stop result-list scrolling on mouse hover while preserving keyboard navigation and wraparound scrolling.
+- Include the archive badges and confirmed restore-and-open workflow from the local 0.1.14–0.1.15 builds in the public release.
+- Preserve existing local appearance and manual-unread preferences; manual unread remains off by default and local to each client.
+
 ## 0.1.15
 
 - Preserve the concurrently added, opt-in local manual-unread menu, blue dot and settings alongside the archive-navigation fix.

@@ -15,7 +15,7 @@ function observable(value) {
 function harness({rows = [{id:'hit', sessionId:'target', title:'Archived title', kind:'message', seq:7, archived:true}],
   archive = ['target'], phase = 'ready', state = 'idle', recovery, missingAPI = false, missingStore = false} = {}) {
   let plugin, Overlay, tree, cursor = 0, dirty = false, mounted = true, timerId = 0;
-  const hooks = [], effects = [], stores = [], timers = new Map(), windowEvents = new Map(), disposers = [], calls = [];
+  const hooks = [], effects = [], stores = [], timers = new Map(), windowEvents = new Map(), disposers = [], calls = [], scrolls = [];
   const binding = observable({key:'old'}), panel = observable({activePanelId:null});
   const workspaces = observable({phase, state, archivedSessionIds:archive});
   const session = observable({loadingOlder:false, hasMore:false}); session.loadThrough = async () => {};
@@ -42,7 +42,10 @@ function harness({rows = [{id:'hit', sessionId:'target', title:'Archived title',
   };
   const document = {baseURI:'http://localhost/', activeElement:null, addEventListener() {}, removeEventListener() {}};
   const window = {localStorage:{getItem:() => null}, addEventListener:(name, fn) => windowEvents.set(name, fn), removeEventListener:name => windowEvents.delete(name),
-    __ModuleLoader__:{load(definition) {plugin = definition.factory(name => {assert.equal(name, 'react'); return React;});}}};
+    __ModuleLoader__:{load(definition) {plugin = definition.factory(name => {
+      if (name === '@deepseek-ai/dsh-client-ui-primitives') return {StateDot: () => null};
+      assert.equal(name, 'react'); return React;
+    });}}};
   vm.runInNewContext(source, {window, document, AbortController, AbortSignal, URL, React,
     setTimeout(fn, delay) {const id = ++timerId; timers.set(id, {fn, delay}); return id;}, clearTimeout:id => timers.delete(id),
     fetch: async url => ({ok:true, text:async () => JSON.stringify(String(url).endsWith('/catalog') ? {sessions:[], workspaces:[]} : {items:rows, cursor:null, scanned:1, totalSessions:1, warnings:[]})}),
@@ -54,7 +57,8 @@ function harness({rows = [{id:'hit', sessionId:'target', title:'Archived title',
     let turns = 0;
     do {
       assert.ok(turns++ < 30, 'hooks settle'); cursor = 0; pending = []; dirty = false; tree = Overlay();
-      for (const node of nodes()) if (node.props.ref) node.props.ref.current ||= {focus() {}, contains:() => true, querySelector:() => null, querySelectorAll:() => []};
+      for (const node of nodes()) if (node.props.ref) node.props.ref.current ||= {focus() {}, contains:() => true,
+        querySelector: selector => node.props.role === 'listbox' ? {scrollIntoView: options => scrolls.push({selector, options})} : null, querySelectorAll:() => []};
       for (const {i, callback, deps} of pending) {effects[i]?.cleanup?.(); effects[i] = {deps, cleanup:callback()};}
     } while (dirty);
   }
@@ -68,13 +72,35 @@ function harness({rows = [{id:'hit', sessionId:'target', title:'Archived title',
   async function search() {windowEvents.get('keydown')({key:'k', metaKey:true, shiftKey:true, preventDefault() {}, stopPropagation() {}}); render();
     input().props.onChange({target:{value:'Archived'}}); render(); expire(220); await tick();}
   render();
-  return {ctx, calls, plugin, workspaces, tick, expire, key, search, render, nodes, find, button, input, click,
+  return {ctx, calls, scrolls, plugin, workspaces, tick, expire, key, search, render, nodes, find, button, input, click,
     get tree() {return tree;}, get text() {return nodes().flatMap(node => node.children.filter(child => typeof child === 'string')).join(' ');},
     result:() => find(node => node.props.role === 'option'),
     unmount() {mounted = false; for (const effect of effects) effect?.cleanup?.(); for (const unsubscribe of stores) unsubscribe?.();},
     dispose() {for (const dispose of disposers) dispose?.(); render();},
   };
 }
+
+test('mouse hover only highlights results; only keyboard navigation scrolls, including wraparound', async () => {
+  const h = harness({archive: [], rows: Array.from({length: 12}, (_, i) => ({id: 'hit-' + i, sessionId: 'target', title: 'Title ' + i, kind: 'title', archived: false}))});
+  await h.search();
+  const results = () => h.nodes().filter(node => node.props.role === 'option');
+  const selected = () => results().findIndex(node => node.props['aria-selected']);
+  assert.equal(h.scrolls.length, 0);
+  for (const i of [11, 0, 8, 2]) {results()[i].props.onMouseEnter(); h.render(); assert.equal(selected(), i);}
+  assert.equal(h.scrolls.length, 0, 'hover never requests scrollIntoView');
+  h.key('ArrowDown'); assert.equal(selected(), 3);
+  assert.equal(h.scrolls.at(-1).selector, '#deepsearch-result-3');
+  assert.equal(h.scrolls.at(-1).options.block, 'nearest');
+  results()[0].props.onMouseEnter(); h.render(); assert.equal(h.scrolls.length, 1);
+  h.key('ArrowUp'); assert.equal(selected(), 11);
+  assert.equal(h.scrolls.at(-1).selector, '#deepsearch-result-11');
+  h.key('ArrowDown'); assert.equal(selected(), 0);
+  assert.equal(h.scrolls.at(-1).selector, '#deepsearch-result-0');
+  const count = h.scrolls.length;
+  h.input().props.onChange({target: {value: 'new query'}}); h.render();
+  h.key('ArrowDown'); assert.equal(h.scrolls.length, count, 'empty results and search reset do not scroll');
+  h.dispose();
+});
 
 test('archived message and plain title badges open an owned inline prompt; cancel retains results', async () => {
   for (const kind of ['message', 'title']) {

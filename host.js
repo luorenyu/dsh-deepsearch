@@ -1,4 +1,4 @@
-import {createSearchService, SearchError} from './search-core.js?deepsearch=0.1.15';
+import {createSearchService, SearchError} from './search-core.js?deepsearch=0.1.16';
 
 export const inject = ['sessionQuery', 'sessionController', 'workspaceController', 'connection'];
 export const MAX_BODY_BYTES = 16 * 1024;

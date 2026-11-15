@@ -9,6 +9,7 @@
 - **当前会话优先**：先从当前会话最新消息往前搜索，再自动逐批扫描其他会话。
 - **原生会话定位**：打开 DSH 原生会话，加载精确消息并尝试滚动、高亮，不替换详情页。
 - **范围与外观**：项目 / 工作区过滤、可选归档；毛玻璃、跟随主题、自定义颜色、不透明度与模糊。
+- **可选手动未读**：设置开关控制侧栏右键标记，复用原生左侧未读点；再次打开自动已读，标记仅保存在本机。
 - **不上传聊天**：复用宿主认证与历史服务，不开额外生产监听端口，不修改消息；仅在你确认“恢复并打开”时取消归档。
 
 ## 功能预览
@@ -17,23 +18,31 @@
 
 ### 全文搜索、命中摘要与准确时间
 
-![正文搜索：中文命中摘要与消息日期时间](docs/images/01-search.png)
+![正文搜索：中文命中摘要与消息日期时间](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/01-search.png)
 
 ### 项目与工作区范围
 
-![按项目与工作区缩小搜索范围](docs/images/02-projects.png)
+![按项目与工作区缩小搜索范围](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/02-projects.png)
 
 ### 归档会话
 
-![可选搜索归档会话](docs/images/03-archived.png)
+![可选搜索归档会话](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/03-archived.png)
 
 ### 三种面板外观
 
-![局部毛玻璃搜索面板](docs/images/04-glass.png)
+![局部毛玻璃搜索面板](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/04-glass.png)
 
-![跟随宿主主题](docs/images/05-theme.png)
+![跟随宿主主题](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/05-theme.png)
 
-![自定义底色、不透明度与模糊](docs/images/06-custom.png)
+![自定义底色、不透明度与模糊](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/06-custom.png)
+
+### 扩展小功能：手动未读
+
+在设置中开启后，通过侧栏右键菜单标记未读 / 已读；再次进入会话自动清除。标记和开关仅保存在本机。下图的侧栏、菜单框架和状态点为模拟宿主，开关与未读菜单逻辑来自真实插件。
+
+![设置中开启会话未读标记](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/07-unread-settings.png)
+
+![右键菜单标记未读与左侧状态点示意](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/08-unread-menu.png)
 
 ## 安装
 
@@ -41,7 +50,7 @@
 
 ### 从 npm 安装（推荐）
 
-已公开发布 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)，当前版本 **0.1.13**。已验证 npm registry 查询、发布校验值及全新目录安装。
+已公开发布 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)，当前版本 **0.1.16**。已验证 npm registry 查询、发布校验值及全新目录安装。
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
@@ -52,13 +61,13 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 ### 从 GitHub 安装
 
 ```sh
-dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.13'
+dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.16'
 ```
 
 也可以从 [Releases](https://github.com/luorenyu/dsh-deepsearch/releases) 下载安装包后安装：
 
 ```sh
-dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.13.tgz
+dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.16.tgz
 ```
 
 > **重要：不要运行 `add dsh-deepsearch` 来安装 npm 同名包。** 无作用域的 npm 同名包属于其他作者，与本仓库无关。请使用 `@renyuluo/dsh-deepsearch`，或本仓库 GitHub / Release 地址。
@@ -72,7 +81,7 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 
 这是替换本项目旧安装条目，不是建议卸载其他作者的同名插件。外观存储键保持不变；同一宿主页面来源下已有偏好会继续使用。
 
-上方功能截图来自 0.1.12 演示组件；0.1.13 仅调整分发身份，不改变搜索功能。
+全文搜索及外观截图最初来自 0.1.12 演示组件；手动未读截图由 0.1.16 的真实插件组件在隔离模拟宿主中生成。0.1.16 同时包含归档恢复确认与鼠标悬浮滚动修复。
 
 ### 在 DSH 插件市场中发现
 
@@ -113,9 +122,9 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 
 ## 扩展小功能 · 手动未读
 
-在右上角「设置」开启「会话未读标记」（默认关闭）。右键侧栏会话可标记为未读或已读，未读会话显示蓝色圆点。再次进入会话时清除手动标记；在当前会话上标记不会立即清除。
+在右上角「设置」开启「会话未读标记」（默认关闭）。右键侧栏会话可标记为未读或已读，未读标记复用 DSH 原生 `StateDot` 未读组件，在会话名称左侧显示，颜色与尺寸跟随宿主。再次进入会话时清除手动标记；在当前会话上标记不会立即清除。
 
-开关与标记保存在当前客户端本机，不跨设备同步，也不修改宿主原生完成提醒。关闭功能隐藏菜单和圆点但保留标记；受原生行尾插槽规则影响，悬浮、聚焦或菜单打开时圆点可能暂时隐藏。无法保存本机存储时，设置区会提示，本次使用仍有效。
+开关与标记保存在当前客户端本机，不跨设备同步，也不修改宿主原生完成提醒。关闭功能隐藏菜单和圆点但保留标记；与原生状态点共用左侧位置，运行中、待交互及原生完成提醒优先显示；归档和空白会话不显示手动圆点。无法保存本机存储时，设置区会提示，本次使用仍有效。
 
 ## 隐私与限制
 

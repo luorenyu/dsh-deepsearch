@@ -67,17 +67,25 @@ test('host menu, retention edges, storage updates, and cleanup use only public s
   events.get('storage')({key: 'dsh-deepsearch.manual-unread.v1'}); assert.deepEqual(ids(store), ['b']);
   stop(); assert.equal(removed, 2); assert.equal(events.size, 0);
 });
-test('real plugin registers additive trailing dot with enabled reactive selector', () => {
+test('real plugin reuses native unread component in leading status seat with reactive selector', () => {
   let plugin, dot, definition;
-  const ctx = {effect: () => {}, slots: {inject: (name, cb) => {if (name === 'sidebar.session.row.trailing') cb();},
+  const ctx = {effect: () => {}, slots: {inject: (name, cb) => {if (name === 'sidebar.session.row.leading') cb();},
     register: (def, component) => {definition = def; dot = component;}}};
-  const React = {createElement: (tag, props) => ({tag, props})};
-  vm.runInNewContext(source, {window: {__ModuleLoader__: {load: config => {plugin = config.factory(name => React);}}}});
-  plugin.apply(ctx); assert.equal(definition.name, 'sidebar.session.row.trailing');
+  const StateDot = () => {};
+  const React = {createElement: (tag, props, ...children) => ({tag, props, children})};
+  vm.runInNewContext(source, {window: {__ModuleLoader__: {load: config => {plugin = config.factory(name => {
+    if (name === 'react') return React;
+    assert.equal(name, '@deepseek-ai/dsh-client-ui-primitives'); return {StateDot};
+  });}}}});
+  plugin.apply(ctx); assert.equal(definition.name, 'sidebar.session.row.leading');
   const store = definition.inject().hooks.manualUnread;
   const render = () => dot({sessionId: 'a', useManualUnread: select => select(store.getSnapshot())});
   assert.equal(render(), null); store.setEnabled(true); store.mark('a', true);
   assert.equal(render().props['aria-label'], '手动未读');
+  assert.equal(render().children[0].tag, StateDot);
+  assert.equal(render().children[0].props.state, 'done');
+  assert.equal(render().props.style.background, undefined);
+  assert.doesNotMatch(source, /sidebar\.session\.row\.trailing/);
   store.setEnabled(false); assert.equal(render(), null); assert.deepEqual(ids(store), ['a']);
   assert.doesNotMatch(helpers, /MutationObserver|data-deepsearch-unread/);
   assert.match(source, /role: 'switch'/); assert.match(source, /'aria-checked': unread.enabled/);

@@ -9,6 +9,7 @@ A local full-text search plugin for **DeepSeek Harness**. Find a conversation fr
 - **Current conversation first**: search its newest messages first, then automatically scan the remaining conversations in batches.
 - **Native conversation navigation**: open the original DSH conversation, load the exact message, and attempt to scroll to and highlight it—without replacing the conversation view.
 - **Scope and appearance controls**: project/workspace filters, optional archived conversations, frosted glass, host theme, and custom color, opacity, and blur.
+- **Optional manual unread**: enable session context-menu marking in settings, with the native leading unread dot, automatic clearing on re-entry, and local-only persistence.
 - **No chat uploads**: reuse the host's authentication and history services with no additional production listener. Messages are never edited; archive state changes only after explicit restoration confirmation.
 
 ## Feature Preview
@@ -17,23 +18,31 @@ These images use the **actual plugin components in an isolated mock host with fi
 
 ### Full-text search, highlighted snippets, and message timestamps
 
-![Full-text search with Chinese matches and local message timestamps](docs/images/01-search.png)
+![Full-text search with Chinese matches and local message timestamps](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/01-search.png)
 
 ### Project and workspace filters
 
-![Narrow the search to a project or workspace](docs/images/02-projects.png)
+![Narrow the search to a project or workspace](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/02-projects.png)
 
 ### Archived conversations
 
-![Optionally include archived conversations](docs/images/03-archived.png)
+![Optionally include archived conversations](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/03-archived.png)
 
 ### Three panel appearance modes
 
-![Frosted-glass search panel](docs/images/04-glass.png)
+![Frosted-glass search panel](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/04-glass.png)
 
-![Use the host theme](docs/images/05-theme.png)
+![Use the host theme](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/05-theme.png)
 
-![Customize background color, opacity, and blur](docs/images/06-custom.png)
+![Customize background color, opacity, and blur](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/06-custom.png)
+
+### Optional extension: manual unread
+
+Enable it in Settings, then mark a sidebar conversation unread/read from its context menu. Re-entering the conversation clears the mark. Preferences and marks remain local to this client. The sidebar, menu frame and status-dot primitive below are mocked host scaffolding; the switch and unread menu logic come from the actual plugin.
+
+![Enable manual unread in Settings](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/07-unread-settings.png)
+
+![Session context menu and leading unread indicator demonstration](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/08-unread-menu.png)
 
 ## Installation
 
@@ -41,7 +50,7 @@ The verified host is **DSH Desktop 0.2.2-rc.3**. Other versions and platforms ha
 
 ### Install from npm (recommended)
 
-The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch), currently **0.1.13**. Registry availability, package integrity, and installation in a clean directory have been verified.
+The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch), currently **0.1.16**. Registry availability, package integrity, and installation in a clean directory have been verified.
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
@@ -52,13 +61,13 @@ The public package name is **`@renyuluo/dsh-deepsearch`**. The product name and 
 ### Install from GitHub
 
 ```sh
-dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.13'
+dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.16'
 ```
 
 Alternatively, download the package from [Releases](https://github.com/luorenyu/dsh-deepsearch/releases), then install it:
 
 ```sh
-dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.13.tgz
+dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.16.tgz
 ```
 
 > **Important: do not install the unscoped npm package with `add dsh-deepsearch`.** That package belongs to another author and is unrelated to this repository. Use `@renyuluo/dsh-deepsearch` or this repository's GitHub/Release URL instead.
@@ -72,7 +81,7 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 
 This migration applies only to this project's old installation; it is not a recommendation to remove another author's similarly named plugin. The appearance storage key is unchanged, so existing preferences are preserved on the same host page origin.
 
-The feature screenshots above were captured with the 0.1.12 demo components. Version 0.1.13 changes only the distribution identity, not search behavior.
+Search and appearance screenshots were originally captured with the 0.1.12 demo components. Manual-unread screenshots use the actual 0.1.16 plugin components in an isolated mock host. Version 0.1.16 also includes confirmed archive restoration and the hover-scrolling fix.
 
 ### Discover it in the DSH plugin marketplace
 
@@ -113,9 +122,9 @@ DeepSearch does not dim the screen or blur the entire DSH page. Its compatibilit
 
 ## Optional extension: manual unread markers
 
-Enable “会话未读标记” in Settings (off by default). Right-click a sidebar conversation to mark it unread/read; unread conversations show a blue dot. Entering a conversation clears its manual marker. Marking the already-open conversation does not immediately clear it.
+Enable “会话未读标记” in Settings (off by default). Right-click a sidebar conversation to mark it unread/read; the marker reuses DSH’s native unread `StateDot` component to the left of the title, with host-owned colors and dimensions. Entering a conversation clears its manual marker. Marking the already-open conversation does not immediately clear it.
 
-Preferences and markers stay in this client’s local storage, do not sync across devices and do not change native completion notifications. Disabling the extension hides menus and dots but keeps markers. Host trailing-slot rules may temporarily hide dots while hovering, focusing or opening a menu. Storage failures are reported in Settings; changes remain usable for the current session.
+Preferences and markers stay in this client’s local storage, do not sync across devices and do not change native completion notifications. Disabling the extension hides menus and dots but keeps markers. Markers share the native leading status seat; running, pending-interaction and native completion states take priority. Archived and blank conversations do not show manual dots. Storage failures are reported in Settings; changes remain usable for the current session.
 
 ## Privacy and Limitations
 

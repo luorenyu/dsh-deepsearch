@@ -5,6 +5,11 @@ const root=new URL('../',import.meta.url);
 const manifest=JSON.parse(readFileSync(new URL('package.json',root)));
 test('portable release exports manifest, locales, icon and backend without user paths',async()=>{
   assert.equal(manifest.exports['./package.json'],'./package.json');
+  assert.equal(manifest.exports['.'], './runtime-' + manifest.version + '.js');
+  assert.ok(manifest.files.includes('runtime-' + manifest.version + '.js'));
+  assert.ok(readFileSync(new URL(manifest.exports['.'], root), 'utf8').includes('deepsearch=' + manifest.version));
+  assert.ok(readFileSync(new URL('host.js', root), 'utf8').includes('deepsearch=' + manifest.version));
+  assert.ok(readFileSync(new URL('client.js', root), 'utf8').includes(manifest.version + ' / 本地全文'));
   for(const language of ['en','zh-CN']) {
     const key='./locale/'+language+'.json';
     assert.ok(manifest.exports[key]);

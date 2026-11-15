@@ -1,7 +1,7 @@
 {
   "source": "client.js (served byte-for-byte, never rewritten)",
-  "sourceSha256": "6dee787ef7082a9b848259c717a4e28bacc7118d798fe1c7e389b7573b161abb",
-  "version": "0.1.12",
+  "sourceSha256": "bfe33e78aa255122349aa11c1a0932601c4b0270522b766b38b4434bdc9901e6",
+  "version": "0.1.16",
   "renderer": "React 18.3.1 / ReactDOM 18.3.1",
   "browser": "agent-browser isolated fresh session",
   "viewport": {
@@ -17,14 +17,27 @@
     "workspace filter",
     "archive checkbox",
     "appearance controls",
+    "unread settings switch",
+    "unread store",
+    "context-menu resolver and actions",
+    "ManualUnreadDot leading-slot component",
     "client CSS"
   ],
   "mocked": [
     "module loader and injected host context",
     "catalog/search API responses",
     "invented Chinese content and timestamps",
-    "background and host theme CSS tokens"
+    "background and host theme CSS tokens",
+    "sidebar rows and context-menu frame",
+    "StateDot primitive visual (not the native host implementation)",
+    "mainView retention transitions for fictional sessions"
   ],
+  "unreadChecks": {
+    "defaultDisabled": true,
+    "markUnread": true,
+    "markRead": true,
+    "autoReadOnMockMainViewReentry": true
+  },
   "screenshots": [
     {
       "file": "01-search.png",
@@ -40,8 +53,18 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
-      "nativeNavigationAttempted": false
+      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": null,
+      "unreadSwitch": null,
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
     },
     {
       "file": "02-projects.png",
@@ -55,8 +78,18 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 2 条 · 已扫描 2/2↑↓ 选择  ↵ 打开",
-      "nativeNavigationAttempted": false
+      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 2 条 · 已扫描 2/2↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": null,
+      "unreadSwitch": null,
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
     },
     {
       "file": "03-archived.png",
@@ -73,8 +106,18 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 5 条 · 已扫描 5/5↑↓ 选择  ↵ 打开",
-      "nativeNavigationAttempted": false
+      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 5 条 · 已扫描 5/5↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": null,
+      "unreadSwitch": null,
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
     },
     {
       "file": "04-glass.png",
@@ -95,8 +138,18 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
-      "nativeNavigationAttempted": false
+      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": null,
+      "unreadSwitch": "false",
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
     },
     {
       "file": "05-theme.png",
@@ -117,8 +170,18 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
-      "nativeNavigationAttempted": false
+      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": null,
+      "unreadSwitch": "false",
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
     },
     {
       "file": "06-custom.png",
@@ -139,11 +202,99 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.12 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
-      "nativeNavigationAttempted": false
+      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": null,
+      "unreadSwitch": "false",
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
+    },
+    {
+      "file": "07-unread-settings.png",
+      "title": "设置 · 会话未读标记（默认关闭，可按需开启）",
+      "appearance": "glass",
+      "savedAppearance": {
+        "mode": "glass",
+        "color": "#edf2f7",
+        "opacity": 88,
+        "blur": 18
+      },
+      "workspace": "",
+      "archived": false,
+      "resultCount": 4,
+      "marks": [
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": {
+        "enabled": true,
+        "ids": []
+      },
+      "unreadSwitch": "true",
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
+    },
+    {
+      "file": "08-unread-menu.png",
+      "title": "右键标记未读 · 左侧 StateDot 原生样式示意（模拟宿主，非宿主截图）",
+      "appearance": null,
+      "savedAppearance": {
+        "mode": "glass",
+        "color": "#edf2f7",
+        "opacity": 88,
+        "blur": 18
+      },
+      "workspace": null,
+      "archived": null,
+      "resultCount": 0,
+      "marks": [],
+      "footer": null,
+      "nativeNavigationAttempted": false,
+      "unread": {
+        "enabled": true,
+        "ids": [
+          "demo-s1"
+        ]
+      },
+      "unreadSwitch": null,
+      "leadingDots": [
+        {
+          "sessionId": "demo-s1",
+          "primitive": "StateDot",
+          "state": "done"
+        }
+      ],
+      "menuItems": [
+        "标记为未读"
+      ],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
     }
   ],
   "requests": [
+    {
+      "path": "/api/deepsearch/catalog"
+    },
     {
       "path": "/api/deepsearch/catalog"
     },
@@ -159,13 +310,6 @@
       "body": {
         "query": "验收记录",
         "workspaceId": "demo-orbit",
-        "includeArchived": false
-      }
-    },
-    {
-      "path": "/api/deepsearch/search",
-      "body": {
-        "query": "验收记录",
         "includeArchived": false
       }
     },
