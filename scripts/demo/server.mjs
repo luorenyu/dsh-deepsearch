@@ -11,6 +11,7 @@ export async function startDemo({depsDir,port=0}={}) {
     ['/',[path.join(here,'index.html'),'text/html']],
     ['/client.js',[path.resolve(here,'../../client.js'),'text/javascript']],
     ['/demo/host.js',[path.join(here,'host.js'),'text/javascript']],
+    ['/demo/shortcuts.mjs',[path.join(here,'shortcuts.mjs'),'text/javascript']],
     ['/vendor/react.js',[path.join(depsDir,'node_modules/react/umd/react.production.min.js'),'text/javascript']],
     ['/vendor/react-dom.js',[path.join(depsDir,'node_modules/react-dom/umd/react-dom.production.min.js'),'text/javascript']],
   ]);
@@ -20,7 +21,7 @@ export async function startDemo({depsDir,port=0}={}) {
     try {
       const url=new URL(req.url,'http://127.0.0.1');
       if(url.pathname==='/api/deepsearch/catalog' && req.method==='GET') {
-        requests.push({path:url.pathname});res.setHeader('Content-Type','application/json');res.end(JSON.stringify(catalog()));return;
+        requests.push({path:url.pathname});res.setHeader('Content-Type','application/json');res.end(JSON.stringify(catalog({includeArchived:url.searchParams.get('includeArchived')==='true'})));return;
       }
       if(url.pathname==='/api/deepsearch/search' && req.method==='POST') {
         let raw='';for await(const chunk of req) {raw+=chunk;if(raw.length>8192)throw new Error('Demo request too large');}

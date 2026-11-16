@@ -1,5 +1,10 @@
 # DeepSearch · Full-text Conversation Search
 
+[![npm](https://img.shields.io/npm/v/%40renyuluo%2Fdsh-deepsearch?style=flat-square&color=3478f6)](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)
+[![release](https://img.shields.io/github/v/release/luorenyu/dsh-deepsearch?style=flat-square&label=release&color=3478f6)](https://github.com/luorenyu/dsh-deepsearch/releases/latest)
+[![license: MIT](https://img.shields.io/badge/license-MIT-3478f6?style=flat-square)](LICENSE)
+[![DeepSeek Harness plugin](https://img.shields.io/badge/DeepSeek_Harness-plugin-7652b7?style=flat-square)](https://github.com/luorenyu/dsh-deepsearch)
+
 [简体中文](README.md) | **English**
 
 A local full-text search plugin for **DeepSeek Harness**. Find a conversation from a fragment you remember, without having to remember its title.
@@ -10,6 +15,8 @@ A local full-text search plugin for **DeepSeek Harness**. Find a conversation fr
 - **Native conversation navigation**: open the original DSH conversation, load the exact message, and attempt to scroll to and highlight it—without replacing the conversation view.
 - **Scope and appearance controls**: project/workspace filters, optional archived conversations, frosted glass, host theme, and custom color, opacity, and blur.
 - **Optional manual unread**: enable session context-menu marking in settings, with the native leading unread dot, automatic clearing on re-entry, and local-only persistence.
+- **Local search history**: record keywords after one idle second, keep up to 30, replay or delete them, and choose the default start tab without storing chat content.
+- **Projects and shortcuts**: start native conversations from project results with a bounded sidebar reveal; optionally use macOS `⌘K` and restore the original binding when disabled.
 - **No chat uploads**: reuse the host's authentication and history services with no additional production listener. Messages are never edited; archive state changes only after explicit restoration confirmation.
 
 ## Feature Preview
@@ -18,31 +25,39 @@ Except for the explicitly labeled sidebar illustration, these images use the **a
 
 ### Full-text search, highlighted snippets, and message timestamps
 
-![Full-text search with Chinese matches and local message timestamps](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/01-search.png)
+![Full-text search with Chinese matches and local message timestamps](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/01-search.png)
 
 ### Project and workspace filters
 
-![Narrow the search to a project or workspace](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/02-projects.png)
+![Narrow the search to a project or workspace](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/02-projects.png)
 
 ### Archived conversations
 
-![Optionally include archived conversations](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/03-archived.png)
+![Optionally include archived conversations](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/03-archived.png)
 
 ### Three panel appearance modes
 
-![Frosted-glass search panel](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/04-glass.png)
+![Frosted-glass search panel](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/04-glass.png)
 
-![Use the host theme](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/05-theme.png)
+![Use the host theme](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/05-theme.png)
 
-![Customize background color, opacity, and blur](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/06-custom.png)
+![Customize background color, opacity, and blur](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/06-custom.png)
 
 ### Optional extension: manual unread
 
 Enable it in Settings, then mark a sidebar conversation unread/read from its context menu. Re-entering the conversation clears the mark. Preferences and marks remain local to this client. The settings image uses the actual plugin component. The context-menu image places a faithful fictional sidebar illustration inside the matching feature-card frame; it is not a native screenshot or runtime-verification evidence.
 
-![Enable manual unread in Settings](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/07-unread-settings.png)
+![Enable manual unread in Settings](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/07-unread-settings.png)
 
-![Session context menu and leading unread indicator demonstration](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16-docs.1/docs/images/08-unread-menu.png)
+![Session context menu and leading unread indicator demonstration](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/08-unread-menu.png)
+
+### Search history and compact settings
+
+Keywords stay local, with a preferred start tab, replay and deletion. The CmdK demonstration uses an in-memory mock shortcut service, not real host configuration writes.
+
+![Local history and preferred start tab](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/09-history.png)
+
+![Compact settings and optional CmdK takeover](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/10-settings.png)
 
 ## Installation
 
@@ -50,7 +65,7 @@ The verified host is **DSH Desktop 0.2.2-rc.3**. Other versions and platforms ha
 
 ### Install from npm (recommended)
 
-The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch). **0.1.16 is published and is the npm latest release**. Registry tarball integrity and installation in a clean directory have been verified.
+The public package is [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch). The feature release documented here is **0.1.17**. Use the commands below; npm and GitHub Releases are the source of truth for publication status.
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
@@ -61,13 +76,13 @@ The public package name is **`@renyuluo/dsh-deepsearch`**. The product name and 
 ### Install from GitHub
 
 ```sh
-dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.16'
+dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.17'
 ```
 
 Alternatively, download the package from [Releases](https://github.com/luorenyu/dsh-deepsearch/releases), then install it:
 
 ```sh
-dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.16.tgz
+dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.17.tgz
 ```
 
 > **Important: do not install the unscoped npm package with `add dsh-deepsearch`.** That package belongs to another author and is unrelated to this repository. Use `@renyuluo/dsh-deepsearch` or this repository's GitHub/Release URL instead.
@@ -81,7 +96,7 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 
 This migration applies only to this project's old installation; it is not a recommendation to remove another author's similarly named plugin. The appearance storage key is unchanged, so existing preferences are preserved on the same host page origin.
 
-Search and appearance screenshots were originally captured with the 0.1.12 demo components. The manual-unread settings screenshot uses the actual 0.1.16 plugin component in an isolated mock host; the menu scene is a fictional illustration. Version 0.1.16 also includes confirmed archive restoration and the hover-scrolling fix.
+Component screenshots have been refreshed for 0.1.17; the approved fictional sidebar illustration is preserved. All demos use an isolated mock host and invented data, never private conversations. Native navigation and persisted shortcut integration require actual-host verification.
 
 ### Discover it in the DSH plugin marketplace
 
@@ -95,16 +110,28 @@ Once accepted, search the relevant marketplace for **DeepSearch** or **会话全
 | --- | --- |
 | Open or close search | macOS `⌘⇧K`; Windows/Linux `Ctrl⇧K` (not tested on physical devices) |
 | Select a result | `↑` / `↓` |
-| Open a result | `Enter` |
+| Open a result | `Enter`; clicking a project result or pressing Enter starts a native conversation in that workspace |
 | Close the panel | `Esc` or click outside |
 | Set the search scope | All / Conversations / Projects, workspace dropdown, include archived |
 | Adjust the panel and extensions | “设置” (Settings) in the upper-right corner |
 
-DeepSearch does not take over DSH's native `⌘K` shortcut or the `⌘F` shortcut commonly used by other search plugins.
+By default, DeepSearch leaves DSH's native `⌘K` alone; takeover is optional in Settings. It does not claim `⌘F`, commonly used by other search plugins.
+
+Include archived is checked by default and can be unchecked. With an empty query, recent conversations show the project and session's last update in local time (`YYYY/MM/DD HH:mm`); missing metadata displays 未分配项目 / 时间未知. The reset-arrow icon after the blur slider restores default appearance and exposes a hover tooltip.
+
+With an empty query, switch between Recent conversations and Search history. The Default history checkbox, before Include archived, remembers a local preference: checked puts Search history first; unchecked puts Recent conversations first. Changing it reorders tabs without switching the current content; reopening selects the first tab. Keywords are saved after one second of idle input, never during IME composition; at most 30 exact-deduplicated keywords are kept, newest first. Clicking a history entry or selecting it with Enter searches again without directly opening a conversation. Individual deletion and Clear history affect only local keywords, not results or chat messages.
 
 Enter a Chinese fragment or an English keyword. Search continues automatically, with results appearing as each batch is scanned—no manual paging is required. “No results” is shown only after a complete scan finds no matches. Read failures, timeouts, incomplete scans, and the 200-result limit are reported separately. Changing the query or closing the panel cancels the previous task.
 
 Opening a message result takes you to the native conversation. The plugin verifies the exact message using `sessionId + seq`, then attempts to locate and highlight the corresponding native row. The status area lets you return to search or clear the highlight. Switching conversations or feature pages releases navigation resources. Title results only open the conversation; they do not claim successful message positioning.
+
+Project results open the native new-conversation page first, then make one bounded attempt to expand the target workspace and folded ancestors and reveal the workspace and conversation in the sidebar. Manual scrolling, further input, or another result stops the attempt. A collapsed sidebar, flat/filtered view, or changed host DOM may skip sidebar reveal without preventing navigation. The workspace dropdown still only filters search scope.
+
+### Optional native ⌘K takeover
+
+Enable “使用 ⌘K 打开 DeepSearch” in Settings to replace native session search with DeepSearch through the official DSH shortcut service on macOS Desktop. ⌘⇧K remains available. Off by default; disabling restores the original override, including custom bindings. This writes DSH shortcut preferences and saves a local recovery journal, surviving reload.
+
+**Turn takeover off before uninstalling.** Direct removal cannot automatically restore host preferences; use DSH shortcut settings to restore Session Search and clear the DeepSearch binding. Failed writes attempt a safe rollback; externally changed bindings are not overwritten and recovery data is kept. Currently macOS Desktop only, not an arbitrary shortcut recorder.
 
 ### Opening archived results
 
@@ -129,7 +156,7 @@ Preferences and markers stay in this client’s local storage, do not sync acros
 ## Privacy and Limitations
 
 - Reads history through the host's public services, not by parsing private chat files directly. It does not upload chats or write to original messages. The search API uses the host's owner-authenticated `connection.fetch` routes.
-- By default, searches regular conversation titles, user messages, and completed final assistant replies. Tool output, reasoning, subagents, and unfinished replies are excluded. Archived conversations are excluded unless enabled.
+- By default, searches regular conversation titles, user messages, and completed final assistant replies. Tool output, reasoning, subagents, and unfinished replies are excluded. The UI includes archived conversations by default and lets you opt out; the underlying API still requires an explicit archive flag.
 - Uses bounded memory, short-lived cursors, and batch scanning—**not a persistent incremental index**. Initial searches through very long histories may be slower. At most 200 results are displayed. Cursors expire after two minutes of inactivity, requiring a new search.
 - Each conversation's history snapshot at its first read defines the scope of that scan. Messages appended during scanning appear only after a new search. History revisions or truncation explicitly require restarting the search.
 - Projects come from workspaces registered with the host. DeepSearch **does not search file contents on disk** or provide command search.

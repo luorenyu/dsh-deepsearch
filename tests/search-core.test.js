@@ -111,7 +111,7 @@ test('catalog includes cold normal history, excludes subagents blank archived, m
   const rows = [{id: 'a', title: 'A', cwd: '/project', events: []}, {id: 'b', title: 'B', cwd: '/project/sub', events: [], cold: true},
     {id: 'archived', title: 'arch', events: []}, {id: 'agent', origin: 'subagent', events: []}, {id: 'blank', blank: true, events: []}];
   const {service, counts} = fixture(rows, {items: [{workspaceId: 'w', title: 'Project', path: '/project', sessionIds: []}], archived: ['archived']});
-  assert.deepEqual(await service.catalog(), {workspaces: [{id: 'w', title: 'Project'}], sessions: [{id: 'a', title: 'A', archived: false, workspaceId: 'w'}, {id: 'b', title: 'B', archived: false}]});
+  assert.deepEqual(await service.catalog(), {workspaces: [{id: 'w', title: 'Project'}], sessions: [{id: 'a', title: 'A', archived: false, updatedAt: 1, workspaceId: 'w'}, {id: 'b', title: 'B', archived: false, updatedAt: 1}]});
   assert.equal(counts.observed.length, 0);
   assert.equal((await service.search({query: 'arch', includeArchived: true})).items.length, 1);
   await assert.rejects(service.search({query: 'x', sessionId: 'agent'}), /excluded/);
@@ -150,6 +150,15 @@ test('title and message results explicitly report archived status with filters a
     await assert.rejects(service.search({query: 'needle', sessionId: 'outside', workspaceId: 'w', includeArchived: true}), /belong/);
     service.dispose();
   }
+});
+
+test('catalog optionally includes archived metadata and exposes last update without reading messages', async () => {
+  const {service, counts, ctx} = fixture([{id:'active',title:'Active',time:1000,events:[]}, {id:'arch',title:'Archived',time:2000,events:[]}], {archived:['arch']});
+  ctx.sessionQuery.listSessions = async () => [{header:{id:'active',createdAt:10}}, {header:{id:'arch',createdAt:20}}];
+  assert.deepEqual((await service.catalog()).sessions.map(row => [row.id,row.updatedAt]), [['active',1000]]);
+  assert.deepEqual((await service.catalog(undefined,true)).sessions.map(row => [row.id,row.updatedAt,row.archived]), [['arch',2000,true],['active',1000,false]]);
+  assert.deepEqual((await service.catalog(undefined,'true')).sessions.map(row => row.id), ['active']);
+  assert.deepEqual(counts.observed, []);
 });
 
 test('cursor pages retain archived metadata and filtering from the initial catalog snapshot', async () => {

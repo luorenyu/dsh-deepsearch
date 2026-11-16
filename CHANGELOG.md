@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.17
+
+- Add local search history: one-second idle recording outside IME composition, 30 deduplicated keywords, replay, individual deletion and clear; no result or chat content is stored.
+- Add a persistent Default history preference with immediate tab ordering, preserved current content and the preferred start view on reopen.
+- Open project results in the native new-conversation page without aborting host navigation; make one bounded sidebar expand/reveal attempt after navigation succeeds.
+- Add opt-in macOS Desktop native ⌘K takeover through the official shortcut service, with recovery journaling, guarded rollback, original-binding restoration and unchanged ⌘⇧K fallback. Turn takeover off before uninstalling.
+- Include archived conversations by default in the UI while retaining the backend API’s opt-in archive behavior; require confirmation before restoring archived results.
+- Show recent conversations’ workspace and last update in local time, including live host summary fallback for older catalogs.
+- Compact Settings: inline reset icon, concise shortcut help with full accessibility details, aligned Settings/Esc controls, and updated bilingual documentation and badges.
+- Preserve existing appearance, manual-unread and local preference keys.
+
 ## 0.1.16
 
 - Add public documentation images for the opt-in manual-unread settings, session context menu and left-side indicator, using fictional demo data.

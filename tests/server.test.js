@@ -35,6 +35,20 @@ test('injects public services and registers owner-gated fetch API, no raw listen
   assert.equal((await search.fetch(request({query: 'x'}))).status, 499);
 });
 
+test('catalog archive inclusion is opt-in and retains update timestamps', async () => {
+  const {ctx,routes} = host();
+  ctx.sessionQuery.listSessions = async () => [{header:{id:'arch',createdAt:10}}];
+  ctx.sessionController.list = async () => ({items:[{sessionId:'arch',updatedAt:2000,projections:{values:{title:'Archived'}}}]});
+  ctx.workspaceController.follow = () => ({async next() {return {value:{type:'baseline',value:{items:[],archivedSessionIds:['arch']}}};}, async return() {return {done:true};}});
+  const route = routes.get('/api/deepsearch/catalog');
+  for (const [query,expected] of [['',0],['?includeArchived=false',0],['?includeArchived=1',0],['?includeArchived=true',1]]) {
+    const response = await route.fetch(new Request('http://localhost/api/deepsearch/catalog'+query));
+    assert.equal(response.status,200);
+    const body = await response.json(); assert.equal(body.sessions.length,expected);
+    if (expected) assert.deepEqual(body.sessions[0],{id:'arch',title:'Archived',archived:true,updatedAt:2000});
+  }
+});
+
 test('rejects unsupported methods, MIME, malformed JSON, unknown fields and invalid parameters', async () => {
   const {routes, counts} = host(); const fetch = routes.get('/api/deepsearch/search').fetch;
   const cases = [[new Request('http://localhost/api/deepsearch/search'), 405],

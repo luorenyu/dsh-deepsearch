@@ -1,7 +1,7 @@
 {
   "source": "client.js (served byte-for-byte, never rewritten)",
-  "sourceSha256": "bfe33e78aa255122349aa11c1a0932601c4b0270522b766b38b4434bdc9901e6",
-  "version": "0.1.16",
+  "sourceSha256": "b534ef8beadad13cd86ea54631b3e48052557729802bbe14e41549ef4486c03e",
+  "version": "0.1.17",
   "renderer": "React 18.3.1 / ReactDOM 18.3.1",
   "browser": "agent-browser isolated fresh session",
   "viewport": {
@@ -13,7 +13,9 @@
     "Overlay React component",
     "Mark excerpt highlighting",
     "keyboard shortcut",
-    "project selection",
+    "project New Session action (mock callback only)",
+    "history tabs, debounce and replay",
+    "shortcut takeover controller (mock service only)",
     "workspace filter",
     "archive checkbox",
     "appearance controls",
@@ -26,11 +28,13 @@
   "mocked": [
     "module loader and injected host context",
     "catalog/search API responses",
-    "invented Chinese content and timestamps",
+    "invented Chinese content and timestamps; deterministic local-history Date.now clock (real debounce timers)",
     "background and host theme CSS tokens",
     "sidebar rows and context-menu frame",
     "StateDot primitive visual (not the native host implementation)",
-    "mainView retention transitions for fictional sessions"
+    "mainView retention transitions for fictional sessions",
+    "in-memory macOS desktop shortcut config/catalog/edit/dispatch; no actual host shortcut configuration",
+    "project New Session callback; no actual session creation"
   ],
   "unreadChecks": {
     "defaultDisabled": true,
@@ -38,14 +42,67 @@
     "markRead": true,
     "autoReadOnMockMainViewReentry": true
   },
+  "historyChecks": {
+    "realDebouncedRecording": true,
+    "defaultPersistsAcrossReopen": true,
+    "replay": true
+  },
+  "shortcutChecks": {
+    "mockOnly": true,
+    "enabledAndRestored": true,
+    "edits": [
+      {
+        "type": "set",
+        "id": "session.search",
+        "binding": null
+      },
+      {
+        "type": "set",
+        "id": "deepsearch.toggle",
+        "binding": {
+          "code": "KeyK",
+          "modifiers": [
+            "meta"
+          ]
+        }
+      },
+      {
+        "type": "reset",
+        "id": "deepsearch.toggle"
+      },
+      {
+        "type": "reset",
+        "id": "session.search"
+      }
+    ],
+    "dispatches": [
+      "deepsearch.toggle"
+    ]
+  },
+  "approved08Sha256": "855cc217d29ec21aef55d5da4e93d79cc39d018c67e2a88e89f3f915e24e7197",
   "screenshots": [
     {
       "file": "01-search.png",
       "title": "中文片段搜索 · 命中摘要高亮 · 消息时间",
+      "sha256": "f5773b1ed54c9fb4e66593805254a7db2331b391c52ab4fd4b0091ed3f9e365f",
       "appearance": "glass",
       "savedAppearance": null,
       "workspace": "",
       "archived": false,
+      "defaultHistory": false,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": null,
+      "shortcutEdits": [],
+      "mockProjectStarts": [],
       "resultCount": 4,
       "marks": [
         "验收记录",
@@ -53,7 +110,7 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "footer": "DeepSearch 0.1.17 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
       "nativeNavigationAttempted": false,
       "unread": null,
       "unreadSwitch": null,
@@ -68,17 +125,29 @@
     },
     {
       "file": "02-projects.png",
-      "title": "项目入口限定工作区 · 只看「星河 · 客户端体验」",
+      "title": "项目入口 · 点击或回车新建会话（宿主调用仅为 mock）",
+      "sha256": "b6b24ed367f68d63b391362a7246224b225087f1602ac455299404cbd8b5a58f",
       "appearance": "glass",
       "savedAppearance": null,
-      "workspace": "demo-orbit",
-      "archived": false,
-      "resultCount": 2,
-      "marks": [
-        "验收记录",
-        "验收记录"
-      ],
-      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 2 条 · 已扫描 2/2↑↓ 选择  ↵ 打开",
+      "workspace": "",
+      "archived": null,
+      "defaultHistory": false,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": null,
+      "shortcutEdits": [],
+      "mockProjectStarts": [],
+      "resultCount": 1,
+      "marks": [],
+      "footer": "DeepSearch 0.1.17 / 本地全文⌘⇧K / Ctrl⇧K↑↓ 选择  ↵ 打开",
       "nativeNavigationAttempted": false,
       "unread": null,
       "unreadSwitch": null,
@@ -94,10 +163,31 @@
     {
       "file": "03-archived.png",
       "title": "勾选「含归档」· 找回旧方案的历史记录",
+      "sha256": "5e979aa3893789bddda684a80c85dd6391dcf2592bf2a32eb901bcc89e918c57",
       "appearance": "glass",
       "savedAppearance": null,
       "workspace": "",
       "archived": true,
+      "defaultHistory": false,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "星河",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": null,
+      "shortcutEdits": [],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
       "resultCount": 5,
       "marks": [
         "验收记录",
@@ -106,7 +196,7 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 5 条 · 已扫描 5/5↑↓ 选择  ↵ 打开",
+      "footer": "DeepSearch 0.1.17 / 本地全文搜索完成 · 5 条 · 已扫描 5/5↑↓ 选择  ↵ 打开",
       "nativeNavigationAttempted": false,
       "unread": null,
       "unreadSwitch": null,
@@ -122,6 +212,7 @@
     {
       "file": "04-glass.png",
       "title": "外观 · 毛玻璃面板（背景与主题令牌由 mock 提供）",
+      "sha256": "f8ba020d514e0760bfc861b9e53fde42c1bd402fd2c52febdf596a30df62ff59",
       "appearance": "glass",
       "savedAppearance": {
         "mode": "glass",
@@ -131,6 +222,26 @@
       },
       "workspace": "",
       "archived": false,
+      "defaultHistory": false,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "星河",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": "false",
+      "shortcutEdits": [],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
       "resultCount": 4,
       "marks": [
         "验收记录",
@@ -138,7 +249,7 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "footer": "DeepSearch 0.1.17 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
       "nativeNavigationAttempted": false,
       "unread": null,
       "unreadSwitch": "false",
@@ -154,6 +265,7 @@
     {
       "file": "05-theme.png",
       "title": "外观 · 跟随 DSH（深色主题令牌由 mock 提供）",
+      "sha256": "7352fe9e43ef0564146b9e6d1495e7088f8de7da416be5dd3932ec36a5d4ae31",
       "appearance": "theme",
       "savedAppearance": {
         "mode": "theme",
@@ -163,6 +275,26 @@
       },
       "workspace": "",
       "archived": false,
+      "defaultHistory": false,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "星河",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": "false",
+      "shortcutEdits": [],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
       "resultCount": 4,
       "marks": [
         "验收记录",
@@ -170,7 +302,7 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "footer": "DeepSearch 0.1.17 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
       "nativeNavigationAttempted": false,
       "unread": null,
       "unreadSwitch": "false",
@@ -186,6 +318,7 @@
     {
       "file": "06-custom.png",
       "title": "外观 · 自定义底色、不透明度与模糊",
+      "sha256": "a1da56d5d781582b302c9918b36533388cd07e11d524359cb3d1d94a4b384e69",
       "appearance": "custom",
       "savedAppearance": {
         "mode": "custom",
@@ -195,6 +328,26 @@
       },
       "workspace": "",
       "archived": false,
+      "defaultHistory": false,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "星河",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": "false",
+      "shortcutEdits": [],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
       "resultCount": 4,
       "marks": [
         "验收记录",
@@ -202,7 +355,7 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "footer": "DeepSearch 0.1.17 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
       "nativeNavigationAttempted": false,
       "unread": null,
       "unreadSwitch": "false",
@@ -218,6 +371,7 @@
     {
       "file": "07-unread-settings.png",
       "title": "设置 · 会话未读标记（默认关闭，可按需开启）",
+      "sha256": "30021fa7d33e5509e34cc35669243d4981a9c0d6e0a08e2a642d4c7923f03bda",
       "appearance": "glass",
       "savedAppearance": {
         "mode": "glass",
@@ -227,6 +381,26 @@
       },
       "workspace": "",
       "archived": false,
+      "defaultHistory": false,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "星河",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": "false",
+      "shortcutEdits": [],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
       "resultCount": 4,
       "marks": [
         "验收记录",
@@ -234,7 +408,7 @@
         "验收记录",
         "验收记录"
       ],
-      "footer": "DeepSearch 0.1.16 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "footer": "DeepSearch 0.1.17 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
       "nativeNavigationAttempted": false,
       "unread": {
         "enabled": true,
@@ -251,10 +425,9 @@
       ]
     },
     {
-      "file": "08-unread-menu.png",
-      "behavioralEvidenceImage": "component-unread-evidence.png",
-      "presentation": "Approved fictional sidebar illustration inside matching feature card, not runtime evidence",
+      "file": "component-unread-evidence.png",
       "title": "右键标记未读 · 左侧 StateDot 原生样式示意（模拟宿主，非宿主截图）",
+      "sha256": "26df6820a0ca710767ff223e72783aadf364286e1cdd7c929f252c6ab5c2e350",
       "appearance": null,
       "savedAppearance": {
         "mode": "glass",
@@ -264,6 +437,26 @@
       },
       "workspace": null,
       "archived": null,
+      "defaultHistory": null,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": false,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "星河",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": null,
+      "shortcutEdits": [],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
       "resultCount": 0,
       "marks": [],
       "footer": null,
@@ -291,11 +484,168 @@
       "registeredMenus": [
         "deepsearch.manual-unread"
       ]
+    },
+    {
+      "file": "08-unread-menu.png",
+      "title": "Approved unread illustration",
+      "presentation": "Approved fictional sidebar illustration; framing and content unchanged; not runtime evidence",
+      "sha256": "855cc217d29ec21aef55d5da4e93d79cc39d018c67e2a88e89f3f915e24e7197",
+      "behavioralEvidenceImage": "component-unread-evidence.png"
+    },
+    {
+      "file": "09-history.png",
+      "title": "搜索历史 / 最近对话 · 默认历史（真实插件、本机虚构记录）",
+      "sha256": "01d7e31f8ebb9c8662949803bdd96c436304991fd1555c5b1e053fa5140f5ee5",
+      "appearance": "glass",
+      "savedAppearance": {
+        "mode": "glass",
+        "color": "#edf2f7",
+        "opacity": 88,
+        "blur": 18
+      },
+      "workspace": "",
+      "archived": false,
+      "defaultHistory": true,
+      "historyTabs": [
+        {
+          "label": "搜索历史",
+          "selected": "true"
+        },
+        {
+          "label": "最近对话",
+          "selected": "false"
+        }
+      ],
+      "history": {
+        "defaultHistory": true,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "工作区筛选",
+            "time": 1791770400000
+          },
+          {
+            "query": "中文检索",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": null,
+      "shortcutEdits": [],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
+      "resultCount": 3,
+      "marks": [],
+      "footer": "DeepSearch 0.1.17 / 本地全文⌘⇧K / Ctrl⇧K↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": {
+        "enabled": true,
+        "ids": []
+      },
+      "unreadSwitch": null,
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
+    },
+    {
+      "file": "10-settings.png",
+      "title": "紧凑设置 · ⌘K 接管已开启（仅内存 mock 快捷键服务）",
+      "sha256": "9cd9b8faf56bdf047fb6baa1a8cd2aabb0b9890eb516a6dd218edfbd524ad214",
+      "appearance": "glass",
+      "savedAppearance": {
+        "mode": "glass",
+        "color": "#edf2f7",
+        "opacity": 88,
+        "blur": 18
+      },
+      "workspace": "",
+      "archived": false,
+      "defaultHistory": true,
+      "historyTabs": [],
+      "history": {
+        "defaultHistory": true,
+        "entries": [
+          {
+            "query": "验收记录",
+            "time": 1791770400000
+          },
+          {
+            "query": "工作区筛选",
+            "time": 1791770400000
+          },
+          {
+            "query": "中文检索",
+            "time": 1791770400000
+          }
+        ]
+      },
+      "shortcutSwitch": "true",
+      "shortcutEdits": [
+        {
+          "type": "set",
+          "id": "session.search",
+          "binding": null
+        },
+        {
+          "type": "set",
+          "id": "deepsearch.toggle",
+          "binding": {
+            "code": "KeyK",
+            "modifiers": [
+              "meta"
+            ]
+          }
+        }
+      ],
+      "mockProjectStarts": [
+        "demo-orbit"
+      ],
+      "resultCount": 4,
+      "marks": [
+        "验收记录",
+        "验收记录",
+        "验收记录",
+        "验收记录"
+      ],
+      "footer": "DeepSearch 0.1.17 / 本地全文搜索完成 · 4 条 · 已扫描 4/4↑↓ 选择  ↵ 打开",
+      "nativeNavigationAttempted": false,
+      "unread": {
+        "enabled": true,
+        "ids": []
+      },
+      "unreadSwitch": "true",
+      "leadingDots": [],
+      "menuItems": [],
+      "registeredSlots": [
+        "sidebar.session.row.leading"
+      ],
+      "registeredMenus": [
+        "deepsearch.manual-unread"
+      ]
     }
   ],
   "requests": [
     {
       "path": "/api/deepsearch/catalog"
+    },
+    {
+      "path": "/api/deepsearch/catalog"
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "includeArchived": false
+      }
     },
     {
       "path": "/api/deepsearch/catalog"
@@ -319,6 +669,13 @@
       "path": "/api/deepsearch/search",
       "body": {
         "query": "验收记录",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
         "includeArchived": true
       }
     },
@@ -328,6 +685,47 @@
         "query": "验收记录",
         "includeArchived": false
       }
+    },
+    {
+      "path": "/api/deepsearch/catalog"
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "中文检索",
+        "preferredSessionId": "demo-s1",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "工作区筛选",
+        "preferredSessionId": "demo-s1",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "preferredSessionId": "demo-s1",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/catalog"
+    },
+    {
+      "path": "/api/deepsearch/search",
+      "body": {
+        "query": "验收记录",
+        "preferredSessionId": "demo-s1",
+        "includeArchived": false
+      }
+    },
+    {
+      "path": "/api/deepsearch/catalog"
     }
   ]
 }

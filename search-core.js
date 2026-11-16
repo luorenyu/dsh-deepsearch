@@ -209,13 +209,13 @@ export function createSearchService(services, options = {}) {
     return {signal: AbortSignal.any([signal, deadline.signal]), finish() {clearTimeout(timer); deadline.abort();}};
   };
   return {
-    async catalog(signal) {
+    async catalog(signal, includeArchived = false) {
       signal = signalFor(signal); check(signal);
       const operation = beginOperation(signal); signal = operation.signal;
       try {
-        const {rows, workspaces} = await readCatalog(services, false, signal);
+        const {rows, workspaces} = await readCatalog(services, includeArchived === true, signal);
         check(signal);
-        return {workspaces, sessions: rows.map(({id, title, archived, workspaceId}) => ({id, title: title.slice(0, 512), archived, ...(workspaceId ? {workspaceId} : {})}))};
+        return {workspaces, sessions: rows.map(({id, title, archived, workspaceId, updatedAt}) => ({id, title: title.slice(0, 512), archived, updatedAt, ...(workspaceId ? {workspaceId} : {})}))};
       } finally {operation.finish();}
     },
     async search(raw, signal) {

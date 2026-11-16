@@ -1,4 +1,4 @@
-import {createSearchService, SearchError} from './search-core.js?deepsearch=0.1.16';
+import {createSearchService, SearchError} from './search-core.js?deepsearch=0.1.17';
 
 export const inject = ['sessionQuery', 'sessionController', 'workspaceController', 'connection'];
 export const MAX_BODY_BYTES = 16 * 1024;
@@ -56,7 +56,7 @@ export function apply(ctx) {
   ctx.connection.fetch.register({path: '/api/deepsearch/search', methods: ['POST'], requestBody: 'buffered',
     fetch: handler('POST', async request => service.search(await readJson(request), request.signal))});
   ctx.connection.fetch.register({path: '/api/deepsearch/catalog', methods: ['GET'], requestBody: 'buffered',
-    fetch: handler('GET', request => service.catalog(request.signal))});
+    fetch: handler('GET', request => service.catalog(request.signal, new URL(request.url).searchParams.get('includeArchived') === 'true'))});
   // Abort in-flight operations and discard cursor metadata on plugin unload.
   ctx.effect(() => () => service.dispose());
 }

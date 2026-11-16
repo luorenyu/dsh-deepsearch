@@ -1,5 +1,10 @@
 /* Only host adapters and StateDot are mocked. Plugin components, unread store,
    context-menu resolver, settings controls and leading-slot component are real. */
+import {createMockShortcuts} from './shortcuts.mjs';
+// Only the demo page's local-history wall clock is fictional; timers remain real.
+const realNow = Date.now;
+const historyNow = Date.parse('2026-10-12T10:00:00+08:00');
+Date.now = () => historyNow;
 const {createElement:h, useSyncExternalStore} = window.React;
 const root = window.ReactDOM.createRoot(document.getElementById('plugin-root'));
 const sidebarRoot = window.ReactDOM.createRoot(document.getElementById('demo-sidebar'));
@@ -14,6 +19,11 @@ window.__ModuleLoader__ = {
     let sessionState = {byId:Object.fromEntries(sessions.map(row=>[row.id,{...row,retainedBy:{mainView:0}}]))};
     const sessionStore = {getSnapshot:()=>sessionState, subscribe:fn=>{sessionListeners.add(fn);return ()=>sessionListeners.delete(fn);}};
     const leading = [], menus = [];
+    const shortcutMock = createMockShortcuts();
+    const onShortcut = event => shortcutMock.service.dispatch(event);
+    document.addEventListener('keydown',onShortcut,true);
+    cleanups.push(()=>document.removeEventListener('keydown',onShortcut,true));
+    Object.assign(window.__DEEPSEARCH_DEMO__,{shortcutEdits:shortcutMock.edits,shortcutDispatches:shortcutMock.dispatches,mockProjectStarts:[]});
     let refreshSidebar = ()=>{};
     const mockOpen = id=>{
       window.__DEEPSEARCH_DEMO__.mockSessionOpens.push(id);
@@ -41,7 +51,8 @@ window.__ModuleLoader__ = {
         },
       },
       layout:{selectPanel(){throw new Error('Native panels unavailable in isolated demo');}},
-      uiWorkspace:{openSession(){
+      shortcuts:shortcutMock.service,
+      uiWorkspace:{startSession(workspaceId){window.__DEEPSEARCH_DEMO__.mockProjectStarts.push(workspaceId);},openSession(){
         window.__DEEPSEARCH_DEMO__.nativeNavigationAttempted=true;
         throw new Error('原生跳转未在隔离演示中启用');
       }},
@@ -77,4 +88,6 @@ window.__ModuleLoader__ = {
     Object.assign(window.__DEEPSEARCH_DEMO__,{loaded:true,unreadStore,openMockSession:mockOpen,closeMenu:()=>refreshSidebar(),registeredSlots:leading.map(({slot})=>slot.name),registeredMenus:menus.map(menu=>menu.id)});
   },
 };
-window.addEventListener('pagehide',()=>{for(const cleanup of cleanups)cleanup();root.unmount();sidebarRoot.unmount();});
+window.addEventListener('pagehide',()=>{for(const cleanup of cleanups)cleanup();root.unmount();sidebarRoot.unmount();Date.now=realNow;});
+// Import only after the isolated module-loader adapter has been installed.
+await import('/client.js');

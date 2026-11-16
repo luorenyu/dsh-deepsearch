@@ -18,8 +18,8 @@ export const messages = [
   {id:'demo-m4',sessionId:'demo-s4',seq:32,role:'user',snippet:'发布前请复核验收记录：README 示例全部使用虚构数据，不展示私人对话，也不冒充原生定位成功。',time:'2026-10-09T11:30:00+08:00'},
   {id:'demo-m5',sessionId:'demo-s5',seq:8,role:'assistant',snippet:'这份旧版验收记录已归档，仍可勾选“含归档”查回；与当前项目的新版方案对照阅读。',time:'2026-09-18T10:05:00+08:00'},
 ];
-export function catalog() {
-  return {workspaces, sessions:conversations.filter(s=>!s.archived)};
+export function catalog({includeArchived=false}={}) {
+  return {workspaces, sessions:conversations.filter(s=>includeArchived || !s.archived).map(s=>({...s,updatedAt:Date.parse(s.time)}))};
 }
 export function search(body) {
   const query = String(body.query || '').trim();
@@ -27,7 +27,7 @@ export function search(body) {
   const items = messages.flatMap(message=>{
     const session=sessions.find(s=>s.id===message.sessionId), start=message.snippet.indexOf(query);
     if (!session || !query || start<0) return [];
-    return [{...message,title:session.title,workspaceId:session.workspaceId,workspaceTitle:workspaces.find(w=>w.id===session.workspaceId).title,range:[start,start+query.length],kind:'message'}];
+    return [{...message,archived:session.archived===true,title:session.title,workspaceId:session.workspaceId,workspaceTitle:workspaces.find(w=>w.id===session.workspaceId).title,range:[start,start+query.length],kind:'message'}];
   });
   return {items,cursor:null,scanned:sessions.length,totalSessions:sessions.length,warnings:[]};
 }

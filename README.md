@@ -1,5 +1,10 @@
 # DeepSearch · 会话全文搜索
 
+[![npm](https://img.shields.io/npm/v/%40renyuluo%2Fdsh-deepsearch?style=flat-square&color=3478f6)](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)
+[![release](https://img.shields.io/github/v/release/luorenyu/dsh-deepsearch?style=flat-square&label=release&color=3478f6)](https://github.com/luorenyu/dsh-deepsearch/releases/latest)
+[![license: MIT](https://img.shields.io/badge/license-MIT-3478f6?style=flat-square)](LICENSE)
+[![DeepSeek Harness plugin](https://img.shields.io/badge/DeepSeek_Harness-plugin-7652b7?style=flat-square)](https://github.com/luorenyu/dsh-deepsearch)
+
 **简体中文** | [English](README.en.md)
 
 为 **DeepSeek Harness** 制作的本地全文搜索插件。记得一小段内容，就能找回对应会话，而不必记住标题。
@@ -10,6 +15,8 @@
 - **原生会话定位**：打开 DSH 原生会话，加载精确消息并尝试滚动、高亮，不替换详情页。
 - **范围与外观**：项目 / 工作区过滤、可选归档；毛玻璃、跟随主题、自定义颜色、不透明度与模糊。
 - **可选手动未读**：设置开关控制侧栏右键标记，复用原生左侧未读点；再次打开自动已读，标记仅保存在本机。
+- **本机搜索历史**：停顿 1 秒记录关键词，最多 30 条；重搜、删除和默认起始 Tab 偏好，不存聊天正文。
+- **项目直达与快捷键**：项目结果开启原生新会话并尝试展开侧栏；macOS 可选接管 `⌘K`，关闭恢复原绑定。
 - **不上传聊天**：复用宿主认证与历史服务，不开额外生产监听端口，不修改消息；仅在你确认“恢复并打开”时取消归档。
 
 ## 功能预览
@@ -18,31 +25,39 @@
 
 ### 全文搜索、命中摘要与准确时间
 
-![正文搜索：中文命中摘要与消息日期时间](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/01-search.png)
+![正文搜索：中文命中摘要与消息日期时间](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/01-search.png)
 
 ### 项目与工作区范围
 
-![按项目与工作区缩小搜索范围](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/02-projects.png)
+![按项目与工作区缩小搜索范围](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/02-projects.png)
 
 ### 归档会话
 
-![可选搜索归档会话](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/03-archived.png)
+![可选搜索归档会话](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/03-archived.png)
 
 ### 三种面板外观
 
-![局部毛玻璃搜索面板](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/04-glass.png)
+![局部毛玻璃搜索面板](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/04-glass.png)
 
-![跟随宿主主题](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/05-theme.png)
+![跟随宿主主题](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/05-theme.png)
 
-![自定义底色、不透明度与模糊](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/06-custom.png)
+![自定义底色、不透明度与模糊](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/06-custom.png)
 
 ### 扩展小功能：手动未读
 
 在设置中开启后，通过侧栏右键菜单标记未读 / 已读；再次进入会话自动清除。标记和开关仅保存在本机。设置图来自真实插件组件；右键菜单图使用高还原侧边栏重绘，嵌入统一功能卡片。重绘图不是原生截图或运行验证证据。
 
-![设置中开启会话未读标记](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16/docs/images/07-unread-settings.png)
+![设置中开启会话未读标记](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/07-unread-settings.png)
 
-![右键菜单标记未读与左侧状态点示意](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.16-docs.1/docs/images/08-unread-menu.png)
+![右键菜单标记未读与左侧状态点示意](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/08-unread-menu.png)
+
+### 搜索历史与紧凑设置
+
+关键词在本机保存；可选择默认历史、重搜或删除。设置中的 ⌘K 演示使用内存模拟快捷键服务，不代表修改真实宿主配置。
+
+![搜索历史与默认起始 Tab](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/09-history.png)
+
+![紧凑设置与可选 ⌘K 接管](https://raw.githubusercontent.com/luorenyu/dsh-deepsearch/v0.1.17/docs/images/10-settings.png)
 
 ## 安装
 
@@ -50,7 +65,7 @@
 
 ### 从 npm 安装（推荐）
 
-公开包名为 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)。**0.1.16 已公开发布，npm latest 为 0.1.16**。已核验 registry 安装包完整性及全新目录安装。
+公开包名为 [@renyuluo/dsh-deepsearch](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)。本次功能版本为 **0.1.17**。请使用下方命令安装；发布状态以 npm 版本页与 GitHub Release 为准。
 
 ```sh
 dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
@@ -61,13 +76,13 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 ### 从 GitHub 安装
 
 ```sh
-dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.16'
+dsh plugin --profile desktop add 'https://github.com/luorenyu/dsh-deepsearch.git#v0.1.17'
 ```
 
 也可以从 [Releases](https://github.com/luorenyu/dsh-deepsearch/releases) 下载安装包后安装：
 
 ```sh
-dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.16.tgz
+dsh plugin --profile desktop add /path/to/renyuluo-dsh-deepsearch-0.1.17.tgz
 ```
 
 > **重要：不要运行 `add dsh-deepsearch` 来安装 npm 同名包。** 无作用域的 npm 同名包属于其他作者，与本仓库无关。请使用 `@renyuluo/dsh-deepsearch`，或本仓库 GitHub / Release 地址。
@@ -81,7 +96,7 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 
 这是替换本项目旧安装条目，不是建议卸载其他作者的同名插件。外观存储键保持不变；同一宿主页面来源下已有偏好会继续使用。
 
-全文搜索及外观截图最初来自 0.1.12 演示组件；手动未读设置图由 0.1.16 的真实插件组件在隔离模拟宿主中生成；菜单场景图为虚构内容重绘。0.1.16 同时包含归档恢复确认与鼠标悬浮滚动修复。
+组件截图已按 0.1.17 更新；菜单场景仍保留已批准的虚构侧边栏重绘。所有演示使用隔离宿主和虚构数据，不展示私人会话；原生导航、快捷键持久化等须以真实宿主验证为准。
 
 ### 在 DSH 插件市场中发现
 
@@ -95,16 +110,28 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 | --- | --- |
 | 打开或关闭搜索 | macOS `⌘⇧K`；Windows / Linux `Ctrl⇧K`（未实机验证） |
 | 选择结果 | `↑` / `↓` |
-| 打开结果 | `Enter` |
+| 打开结果 | `Enter`；项目结果点击或回车将在该项目下开启原生新会话 |
 | 关闭浮层 | `Esc` 或点击外部 |
 | 搜索范围 | 全部 / 对话 / 项目，工作区下拉，含归档 |
 | 调整面板与扩展功能 | 右上角「设置」 |
 
-不占用 DSH 原生 `⌘K`，也不占用其他搜索插件常用的 `⌘F`。
+默认不占用 DSH 原生 `⌘K`，可在设置中选择接管；不占用其他搜索插件常用的 `⌘F`。
+
+「含归档」默认勾选，可手动取消。未输入关键词时，最近对话显示所属项目与会话最后更新时间（本机时区，`年/月/日 时:分`）；缺失的项目或时间分别显示「未分配项目」「时间未知」。外观恢复默认使用模糊滑条后的回转箭头图标，悬停可见说明。
+
+未输入关键词时，可切换「最近对话 / 搜索历史」。「默认历史」位于「含归档」左侧，勾选后「搜索历史」排在第一位，取消后「最近对话」排在第一位；切换偏好不跳走当前内容，每次重新打开选中第一项（仅本机保存）。关键词停顿 1 秒后记录，中文输入法组词期间不记录；最多 30 条、同词去重、最近使用优先。点击或回车选择历史会重新搜索，不会直接打开会话；支持单条删除与清空，不保存结果或聊天正文。
 
 输入中文片段或英文关键词后，搜索自动继续，不需要逐页点击。结果随扫描逐步出现；只有扫描完成且没有命中才显示没有找到。读取失败、超时、未完成与 200 条结果上限会单独提示。切换关键词或关闭面板会取消旧任务。
 
 点击正文结果后，插件打开原生会话，使用 `sessionId + seq` 检查精确消息是否存在，随后尝试定位原生行并高亮。提示区可以返回搜索或清除高亮；切换会话或其他功能页时释放定位资源。标题结果仅打开会话，不冒充消息定位成功。
+
+项目结果会先进入该项目的原生新会话页，再尝试一次性展开左侧目标项目及折叠的父级，并将项目和新会话滚动到可见区域。手动滚动、继续操作或打开其他结果会终止定位；侧栏收起、平铺/筛选视图或宿主结构变化时可跳过，不影响新会话打开。工作区下拉仍只筛选搜索范围。
+
+### 可选接管原生 ⌘K
+
+在「设置」开启「使用 ⌘K 打开 DeepSearch」后，macOS 桌面端通过 DSH 官方快捷键接口将原生会话搜索让位给 DeepSearch；⌘⇧K 保留。默认关闭，关闭时恢复开启前的原绑定，而不是强制重置你的自定义快捷键。该选项会写入 DSH 快捷键配置，并在本机保存恢复备份；刷新后保留。
+
+**卸载插件前请先关闭接管。** 直接卸载不会自动恢复宿主配置；可在 DSH 快捷键设置中恢复「会话搜索」，并清除 DeepSearch 的绑定。若写入失败或期间被其他设置修改，插件会尝试安全回滚，保留备份并提示恢复，不覆盖新配置。当前只支持 macOS 桌面端，不是任意快捷键录入器。
 
 ### 打开归档结果
 
@@ -129,7 +156,7 @@ dsh plugin --profile desktop add @renyuluo/dsh-deepsearch
 ## 隐私与限制
 
 - 通过宿主公开历史服务读取，不直接解析私有聊天文件，不上传聊天、不写入原始消息。搜索 API 使用宿主 `connection.fetch` owner 认证路由。
-- 默认搜索普通会话标题、用户输入及已完成助手最终回复；排除工具输出、推理、子智能体与未完成回复。默认不含归档。
+- 默认搜索普通会话标题、用户输入及已完成助手最终回复；排除工具输出、推理、子智能体与未完成回复。界面默认勾选「含归档」，可手动关闭；底层 API 仍需显式请求归档。
 - 搜索采用有界内存、短期游标和逐批扫描，**不是持久增量索引**。超长历史首次查询可能较慢；最多显示 200 条命中，游标闲置两分钟过期后需重搜。
 - 每个会话首次读取的历史切面构成本次范围；扫描期间新追加内容需要重新搜索才会出现。版本变更或历史截断会明确要求重新搜索。
 - 项目来自宿主已登记工作区，**不搜索磁盘文件内容**，也不提供命令搜索。
