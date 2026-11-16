@@ -2,18 +2,13 @@
 
 [![npm](https://img.shields.io/npm/v/%40renyuluo%2Fdsh-deepsearch?style=flat-square&color=3478f6)](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)
 [![release](https://img.shields.io/github/v/release/luorenyu/dsh-deepsearch?style=flat-square&label=release&color=3478f6)](https://github.com/luorenyu/dsh-deepsearch/releases/latest)
+[![CI](https://github.com/luorenyu/dsh-deepsearch/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/luorenyu/dsh-deepsearch/actions/workflows/test.yml)
 [![license: MIT](https://img.shields.io/badge/license-MIT-3478f6?style=flat-square)](LICENSE)
 [![DeepSeek Harness plugin](https://img.shields.io/badge/DeepSeek_Harness-plugin-7652b7?style=flat-square)](https://github.com/luorenyu/dsh-deepsearch)
 
 **简体中文** | [English](README.en.md)
 
 为 **DeepSeek Harness** 制作的本地全文搜索插件。记得一小段内容，就能找回对应会话，而不必记住标题。
-
-[![npm](https://img.shields.io/npm/v/%40renyuluo%2Fdsh-deepsearch)](https://www.npmjs.com/package/@renyuluo/dsh-deepsearch)
-[![Release](https://img.shields.io/github/v/release/luorenyu/dsh-deepsearch)](https://github.com/luorenyu/dsh-deepsearch/releases)
-[![CI](https://github.com/luorenyu/dsh-deepsearch/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/luorenyu/dsh-deepsearch/actions/workflows/test.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](https://github.com/luorenyu/dsh-deepsearch/blob/main/LICENSE)
-[![DeepSeek Harness plugin](https://img.shields.io/badge/DeepSeek_Harness-plugin-7356bf)](https://github.com/luorenyu/dsh-deepsearch)
 
 - **中文片段也能搜**：不依赖 FTS 分词，支持连续中文子串、英文大小写不敏感和字面符号。
 - **正文搜索**：会话标题、用户输入、助手已完成的最终回复；命中摘要直接高亮，展示消息的本地日期与时间。
